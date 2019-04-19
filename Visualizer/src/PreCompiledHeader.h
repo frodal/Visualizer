@@ -1,5 +1,6 @@
 #pragma once
 
 #include <iostream>
-#include <GLFW/glfw3.h> // See GLFW.org for the documentation and to download newest version!
+#include <GL/glew.h> // See http://glew.sourceforge.net/ for the documentation and to download the newest version!
+#include <GLFW/glfw3.h> // See https://www.glfw.org/ for the documentation and to download the newest version!
 

@@ -1,5 +1,5 @@
 /*
-This is the main .cpp file for the Visulazier program using OpenGL to render stuff.
+This is the main .cpp file for the Visulazier application using OpenGL to render stuff.
 */
 #include "PreCompiledHeader.h" // Includes precompiled header
 
@@ -10,7 +10,7 @@ int main(void)
 {
 	GLFWwindow* window;
 
-	/* Initialize the library */
+	/* Initialize the GLFW library */
 	if (!glfwInit())
 	{
 		std::cout << "Error: Could not set up the GLFW library!" << std::endl;
@@ -28,6 +28,20 @@ int main(void)
 
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
+
+	/* Initialize the GLEW library (Needs a valid OpenGL rendering context)*/
+	GLenum message = glewInit();
+	if (message != GLEW_OK)
+	{
+		std::cout << "Error: Could not set up the GLEW library!" << std::endl;
+		std::cout << glewGetErrorString(message) << std::endl;
+		return -1;
+	}
+
+	/* Prints the current versions used to the console*/
+	std::cout << "Current GLFW version:   " << glfwGetVersionString() << std::endl;
+	std::cout << "Current GLEW version:   " << glewGetString(GLEW_VERSION) << std::endl;
+	std::cout << "Current OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
