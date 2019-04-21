@@ -6,6 +6,10 @@ See the documentation of OpenGL, e.g., http://docs.gl/
 
 
 
+template<typename T, std::size_t N>
+constexpr std::size_t lengthof(T(&)[N]) { return N; }
+
+
 static void GLClearError()
 {
 	while (glGetError() != GL_NO_ERROR);
@@ -166,8 +170,8 @@ int main(void)
 	unsigned int buffer;
 	GLCall(glGenBuffers(1, &buffer));
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
-
+	GLCall(glBufferData(GL_ARRAY_BUFFER, lengthof(positions) * sizeof(float), positions, GL_STATIC_DRAW));
+	
 	GLCall(glEnableVertexAttribArray(0));
 	GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
 
@@ -175,7 +179,7 @@ int main(void)
 	unsigned int indexBufferObject;
 	GLCall(glGenBuffers(1, &indexBufferObject));
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject));
-	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
+	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, lengthof(indices) * sizeof(unsigned int), indices, GL_STATIC_DRAW));
 
 	ShaderProgramSource source = ParseShader("resources/shaders/Basic.shader");
 	unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
