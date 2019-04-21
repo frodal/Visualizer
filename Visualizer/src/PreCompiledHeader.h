@@ -8,8 +8,7 @@
 #include <string> // Standard string library for C++
 #include <sstream> // Standard String stream library for C++
 
-/* Defines some error checking macros to be used with OpenGL*/
-#define ASSERT(x) if (!(x)) __debugbreak();
-#define GLCall(x) GLClearError();\
-	x;\
-	ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+template<typename T, std::size_t N>
+constexpr std::size_t lengthof(T(&)[N]) { return N; }
+
+

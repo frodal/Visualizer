@@ -2,28 +2,12 @@
 This is the main .cpp file for the Visulazier application using OpenGL to render stuff.
 See the documentation of OpenGL, e.g., http://docs.gl/
 */
-#include "PreCompiledHeader.h" // Includes precompiled header
+#include "PreCompiledHeader.h"
+#include "Renderer.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 
-
-template<typename T, std::size_t N>
-constexpr std::size_t lengthof(T(&)[N]) { return N; }
-
-
-static void GLClearError()
-{
-	while (glGetError() != GL_NO_ERROR);
-}
-
-static bool GLLogCall(const char* function, const char* file, int line)
-{
-	while (GLenum error = glGetError())
-	{
-		std::cout << "[OpenGL Error] (" << error << "): " << function << " " << file << ":" << line << std::endl;
-		return false;
-	}
-	return true;
-}
 
 struct ShaderProgramSource
 {
@@ -146,94 +130,88 @@ int main(void)
 	std::cout << "Current GLFW version:   " << glfwGetVersionString() << std::endl;
 	std::cout << "Current GLEW version:   " << glewGetString(GLEW_VERSION) << std::endl;
 	std::cout << "Current OpenGL version: " << glGetString(GL_VERSION) << std::endl;
-
-	/* Vertex positions*/
-	float positions[] = {
-		-0.5f, -0.5f,
-		 0.5f, -0.5f,
-		 0.5f,  0.5f,
-		-0.5f,  0.5f,
-	};
-
-	/* Triangle vertex indices (position[index])*/
-	unsigned int indices[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
-
-	/* Allocates and sets a vertex array to be used togheter with the array buffer below*/
-	unsigned int vertexArrayObject;
-	GLCall(glGenVertexArrays(1, &vertexArrayObject));
-	GLCall(glBindVertexArray(vertexArrayObject));
-
-	/* Allocates and sets an array buffer for the vertex data*/
-	unsigned int buffer;
-	GLCall(glGenBuffers(1, &buffer));
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, lengthof(positions) * sizeof(float), positions, GL_STATIC_DRAW));
-	
-	GLCall(glEnableVertexAttribArray(0));
-	GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
-
-	/* Allocates and sets an index buffer for the data*/
-	unsigned int indexBufferObject;
-	GLCall(glGenBuffers(1, &indexBufferObject));
-	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject));
-	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, lengthof(indices) * sizeof(unsigned int), indices, GL_STATIC_DRAW));
-
-	ShaderProgramSource source = ParseShader("resources/shaders/Basic.shader");
-	unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
-	GLCall(glUseProgram(shader));
-
-	/* Retrives the location of the uniform "u_Color", used in the fragment shader*/
-	GLCall(int location = glGetUniformLocation(shader, "u_Color"));
-	ASSERT(location != 1);
-
-	/* Clears the bound buffers and program/shader*/
-	GLCall(glBindVertexArray(0));
-	GLCall(glUseProgram(0));
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
-	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-
-	float rgb[] = { 0.0f, 0.0f, 0.0f };
-	float increment;
-	int channel = 2;
-
-	/* Loop until the user closes the window */
-	while (!glfwWindowShouldClose(window))
 	{
-		/* Render here */
-		GLCall(glClear(GL_COLOR_BUFFER_BIT));
+		/* Vertex positions*/
+		float positions[] = {
+			-0.5f, -0.5f,
+			 0.5f, -0.5f,
+			 0.5f,  0.5f,
+			-0.5f,  0.5f,
+		};
 
-		/*Binding shader and sets the value of "u_Color" at location*/
-		GLCall(glUseProgram(shader));
-		GLCall(glUniform4f(location, rgb[0], rgb[1], rgb[2], 1.0f));
+		/* Triangle vertex indices (position[index])*/
+		unsigned int indices[] = {
+			0, 1, 2,
+			2, 3, 0
+		};
 
-		/* Binding vertex array and index buffer*/
+		/* Allocates and sets a vertex array to be used togheter with the array buffer below*/
+		unsigned int vertexArrayObject;
+		GLCall(glGenVertexArrays(1, &vertexArrayObject));
 		GLCall(glBindVertexArray(vertexArrayObject));
-		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject));
 
-		/* Sets the uniform used in the shader with location "location"*/
+		/* Allocates and sets an array buffer for the vertex data*/
+		VertexBuffer vertexBuffer(positions, lengthof(positions) * sizeof(float));
 
-		/*Drawing using openGL*/
-		GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+		GLCall(glEnableVertexAttribArray(0));
+		GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
 
-		if (rgb[channel] <= 0)
-			increment = 0.01;
-		else if (rgb[channel] >= 1.0f)
-			increment = -0.01;
-		rgb[channel] += increment;
+		/* Allocates and sets an index buffer for the data*/
+		IndexBuffer indexBuffer(indices, lengthof(indices));
 
-		/* Swap front and back buffers */
-		glfwSwapBuffers(window);
+		ShaderProgramSource source = ParseShader("resources/shaders/Basic.shader");
+		unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
+		GLCall(glUseProgram(shader));
 
-		/* Poll for and process events */
-		glfwPollEvents();
+		/* Retrives the location of the uniform "u_Color", used in the fragment shader*/
+		GLCall(int location = glGetUniformLocation(shader, "u_Color"));
+		ASSERT(location != 1);
+
+		/* Clears the bound buffers and program/shader*/
+		GLCall(glBindVertexArray(0));
+		GLCall(glUseProgram(0));
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+
+		float rgb[] = { 0.0f, 0.0f, 0.0f };
+		float increment;
+		int channel = 2;
+
+		/* Loop until the user closes the window */
+		while (!glfwWindowShouldClose(window))
+		{
+			/* Render here */
+			GLCall(glClear(GL_COLOR_BUFFER_BIT));
+
+			/*Binding shader and sets the value of "u_Color" at location*/
+			GLCall(glUseProgram(shader));
+			GLCall(glUniform4f(location, rgb[0], rgb[1], rgb[2], 1.0f));
+
+			/* Binding vertex array and index buffer*/
+			GLCall(glBindVertexArray(vertexArrayObject));
+			indexBuffer.Bind();
+
+			/* Sets the uniform used in the shader with location "location"*/
+
+			/*Drawing using openGL*/
+			GLCall(glDrawElements(GL_TRIANGLES, lengthof(indices), GL_UNSIGNED_INT, nullptr));
+
+			if (rgb[channel] <= 0)
+				increment = 0.01f;
+			else if (rgb[channel] >= 1.0f)
+				increment = -0.01f;
+			rgb[channel] += increment;
+
+			/* Swap front and back buffers */
+			glfwSwapBuffers(window);
+
+			/* Poll for and process events */
+			glfwPollEvents();
+		}
+
+		/* Deletes the shader from the GPU*/
+		GLCall(glDeleteProgram(shader));
 	}
-
-	/* Deletes the shader from the GPU*/
-	GLCall(glDeleteProgram(shader));
-
 	/* Terminates the GLFW context*/
 	glfwTerminate();
 	return 0;
