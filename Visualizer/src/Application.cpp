@@ -110,6 +110,11 @@ int main(void)
 		return -1;
 	}
 
+	/* Sets the version of OpenGL to use and sets the openGL profile*/
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow(640, 480, "Visulazier", NULL, NULL);
 	if (!window)
@@ -146,16 +151,22 @@ int main(void)
 		-0.5f,  0.5f,
 	};
 
+	/* Triangle vertex indices (position[index])*/
 	unsigned int indices[] = {
 		0, 1, 2,
 		2, 3, 0
 	};
 
+	/* Allocates and sets a vertex array to be used togheter with the array buffer below*/
+	unsigned int vertexArrayObject;
+	GLCall(glGenVertexArrays(1, &vertexArrayObject));
+	GLCall(glBindVertexArray(vertexArrayObject));
+
 	/* Allocates and sets an array buffer for the vertex data*/
 	unsigned int buffer;
 	GLCall(glGenBuffers(1, &buffer));
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW));
+	GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
 
 	GLCall(glEnableVertexAttribArray(0));
 	GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
@@ -174,6 +185,12 @@ int main(void)
 	GLCall(int location = glGetUniformLocation(shader, "u_Color"));
 	ASSERT(location != 1);
 
+	/* Clears the bound buffers and program/shader*/
+	GLCall(glBindVertexArray(0));
+	GLCall(glUseProgram(0));
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+
 	float rgb[] = { 0.0f, 0.0f, 0.0f };
 	float increment;
 	int channel = 2;
@@ -184,17 +201,24 @@ int main(void)
 		/* Render here */
 		GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-		/* Sets the uniform used in the shader with location "location"*/
+		/*Binding shader and sets the value of "u_Color" at location*/
+		GLCall(glUseProgram(shader));
 		GLCall(glUniform4f(location, rgb[0], rgb[1], rgb[2], 1.0f));
+
+		/* Binding vertex array and index buffer*/
+		GLCall(glBindVertexArray(vertexArrayObject));
+		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject));
+
+		/* Sets the uniform used in the shader with location "location"*/
+
+		/*Drawing using openGL*/
+		GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
 		if (rgb[channel] <= 0)
 			increment = 0.01;
 		else if (rgb[channel] >= 1.0f)
 			increment = -0.01;
 		rgb[channel] += increment;
-
-		/*Drawing using openGL*/
-		GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -203,8 +227,10 @@ int main(void)
 		glfwPollEvents();
 	}
 
+	/* Deletes the shader from the GPU*/
 	GLCall(glDeleteProgram(shader));
 
+	/* Terminates the GLFW context*/
 	glfwTerminate();
 	return 0;
 }
