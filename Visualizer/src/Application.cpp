@@ -6,6 +6,7 @@ See the documentation of OpenGL, e.g., http://docs.gl/
 #include "Renderer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "VertexArray.h"
 
 
 
@@ -123,6 +124,7 @@ int main(void)
 	{
 		std::cout << "Error: Could not set up the GLEW library!" << std::endl;
 		std::cout << glewGetErrorString(message) << std::endl;
+		glfwTerminate();
 		return -1;
 	}
 
@@ -146,15 +148,14 @@ int main(void)
 		};
 
 		/* Allocates and sets a vertex array to be used togheter with the array buffer below*/
-		unsigned int vertexArrayObject;
-		GLCall(glGenVertexArrays(1, &vertexArrayObject));
-		GLCall(glBindVertexArray(vertexArrayObject));
+		VertexArray vertexArray;
 
 		/* Allocates and sets an array buffer for the vertex data*/
 		VertexBuffer vertexBuffer(positions, lengthof(positions) * sizeof(float));
 
-		GLCall(glEnableVertexAttribArray(0));
-		GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
+		VertexBufferLayout layout;
+		layout.Push<float>(2);
+		vertexArray.AddBuffer(vertexBuffer, layout);
 
 		/* Allocates and sets an index buffer for the data*/
 		IndexBuffer indexBuffer(indices, lengthof(indices));
@@ -168,10 +169,10 @@ int main(void)
 		ASSERT(location != 1);
 
 		/* Clears the bound buffers and program/shader*/
-		GLCall(glBindVertexArray(0));
+		vertexArray.UnBind();
 		GLCall(glUseProgram(0));
-		GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
-		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+		vertexBuffer.UnBind();
+		indexBuffer.UnBind();
 
 		float rgb[] = { 0.0f, 0.0f, 0.0f };
 		float increment;
@@ -185,13 +186,12 @@ int main(void)
 
 			/*Binding shader and sets the value of "u_Color" at location*/
 			GLCall(glUseProgram(shader));
+			/* Sets the uniform used in the shader with location "location"*/
 			GLCall(glUniform4f(location, rgb[0], rgb[1], rgb[2], 1.0f));
 
 			/* Binding vertex array and index buffer*/
-			GLCall(glBindVertexArray(vertexArrayObject));
+			vertexArray.Bind();
 			indexBuffer.Bind();
-
-			/* Sets the uniform used in the shader with location "location"*/
 
 			/*Drawing using openGL*/
 			GLCall(glDrawElements(GL_TRIANGLES, lengthof(indices), GL_UNSIGNED_INT, nullptr));
@@ -212,6 +212,9 @@ int main(void)
 		/* Deletes the shader from the GPU*/
 		GLCall(glDeleteProgram(shader));
 	}
+	/* Closes and destroys the GLFW window*/
+	glfwDestroyWindow(window);
+
 	/* Terminates the GLFW context*/
 	glfwTerminate();
 	return 0;

@@ -7,6 +7,7 @@
 #include <fstream> // Used for reading files such as the vertex and fragment shader source
 #include <string> // Standard string library for C++
 #include <sstream> // Standard String stream library for C++
+#include <vector> // Standard vector library for C++
 
 template<typename T, std::size_t N>
 constexpr std::size_t lengthof(T(&)[N]) { return N; }
