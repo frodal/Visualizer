@@ -8,7 +8,7 @@ See the documentation of OpenGL, e.g., http://docs.gl/
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 #include "Shader.h"
-
+#include "VertexBufferLayout.h"
 
 
 int main(void)
@@ -94,6 +94,8 @@ int main(void)
 		vertexBuffer.UnBind();
 		indexBuffer.UnBind();
 
+		Renderer renderer;
+
 		float rgb[] = { 0.0f, 0.0f, 0.0f };
 		float increment;
 		int channel = 2;
@@ -101,20 +103,13 @@ int main(void)
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
 		{
-			/* Render here */
-			GLCall(glClear(GL_COLOR_BUFFER_BIT));
+			renderer.Clear();
 
-			/*Binding shader and sets the value of "u_Color" at location*/
-			shader.Bind();
 			/* Sets the uniform used in the shader with name "u_Color"*/
+			shader.Bind();
 			shader.SetUniform4f("u_Color", rgb[0], rgb[1], rgb[2], 1.0f);
 
-			/* Binding vertex array and index buffer*/
-			vertexArray.Bind();
-			indexBuffer.Bind();
-
-			/*Drawing using openGL*/
-			GLCall(glDrawElements(GL_TRIANGLES, lengthof(indices), GL_UNSIGNED_INT, nullptr));
+			renderer.Draw(vertexArray, indexBuffer, shader);
 
 			if (rgb[channel] <= 0)
 				increment = 0.01f;

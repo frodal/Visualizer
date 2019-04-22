@@ -1,7 +1,5 @@
 #include "PreCompiledHeader.h"
 #include "Shader.h"
-#include "Renderer.h"
-
 
 
 Shader::Shader(const std::string& _filepath)
