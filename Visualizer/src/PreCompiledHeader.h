@@ -8,6 +8,7 @@
 #include <string> // Standard string library for C++
 #include <sstream> // Standard String stream library for C++
 #include <vector> // Standard vector library for C++
+#include <unordered_map> // Standard C++ library
 
 template<typename T, std::size_t N>
 constexpr std::size_t lengthof(T(&)[N]) { return N; }
