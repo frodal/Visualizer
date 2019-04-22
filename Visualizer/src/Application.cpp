@@ -9,6 +9,7 @@ See the documentation of OpenGL, e.g., http://docs.gl/
 #include "VertexArray.h"
 #include "Shader.h"
 #include "VertexBufferLayout.h"
+#include "Texture.h"
 
 
 int main(void)
@@ -58,10 +59,10 @@ int main(void)
 	{
 		/* Vertex positions*/
 		float positions[] = {
-			-0.5f, -0.5f,
-			 0.5f, -0.5f,
-			 0.5f,  0.5f,
-			-0.5f,  0.5f,
+			-0.5f, -0.5f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 1.0f
 		};
 
 		/* Triangle vertex indices (position[index])*/
@@ -69,6 +70,9 @@ int main(void)
 			0, 1, 2,
 			2, 3, 0
 		};
+
+		GLCall(glEnable(GL_BLEND));
+		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 		/* Allocates and sets a vertex array to be used togheter with the array buffer below*/
 		VertexArray vertexArray;
@@ -78,15 +82,22 @@ int main(void)
 
 		VertexBufferLayout bufferLayout;
 		bufferLayout.Push<float>(2);
+		bufferLayout.Push<float>(2);
 		vertexArray.AddBuffer(vertexBuffer, bufferLayout);
 
 		/* Allocates and sets an index buffer for the data*/
 		IndexBuffer indexBuffer(indices, lengthof(indices));
 
-		Shader shader("resources/shaders/Basic.shader");
+		Shader shader("resources/shaders/Texture.shader");
 		shader.Bind();
 		/* Retrives the location of the uniform "u_Color", used in the fragment shader*/
-		shader.SetUniform4f("u_Color", 0.0f, 0.0f, 0.0f, 1.0f);
+		//shader.SetUniform4f("u_Color", 0.0f, 0.0f, 0.0f, 1.0f);
+
+		Texture texture("resources/textures/Pyramids.png");
+		
+		unsigned int textureSlot = 0;
+		texture.Bind(textureSlot);
+		shader.SetUniform1i("u_Texture", textureSlot);
 
 		/* Clears the bound buffers and program/shader*/
 		vertexArray.UnBind();
@@ -107,7 +118,7 @@ int main(void)
 
 			/* Sets the uniform used in the shader with name "u_Color"*/
 			shader.Bind();
-			shader.SetUniform4f("u_Color", rgb[0], rgb[1], rgb[2], 1.0f);
+			//shader.SetUniform4f("u_Color", rgb[0], rgb[1], rgb[2], 1.0f);
 
 			renderer.Draw(vertexArray, indexBuffer, shader);
 
