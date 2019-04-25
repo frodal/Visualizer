@@ -88,8 +88,11 @@ int main(void)
 		/* Allocates and sets an index buffer for the data*/
 		IndexBuffer indexBuffer(indices, lengthof(indices));
 
+		glm::mat4 projection = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f);
+
 		Shader shader("resources/shaders/Texture.shader");
 		shader.Bind();
+		shader.SetUniformMat4f("u_MVP", projection);
 		/* Retrives the location of the uniform "u_Color", used in the fragment shader*/
 		//shader.SetUniform4f("u_Color", 0.0f, 0.0f, 0.0f, 1.0f);
 
