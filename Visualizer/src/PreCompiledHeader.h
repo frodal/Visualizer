@@ -13,7 +13,11 @@
 #include "glm/glm/glm.hpp" // OpenGL Math library, see https://glm.g-truc.net/0.9.9/index.html
 #include "glm/glm/gtc/matrix_transform.hpp" // OpenGL Math library
 
+#include "Imgui/imgui.h" // Dear ImGui: Bloat-free Immediate Mode Graphical User interface for C++ with minimal dependencies, see https://github.com/ocornut/imgui
+#include "Imgui/imgui_impl_opengl3.h"
+#include "Imgui/imgui_impl_glfw.h"
 
+#define _CRT_SECURE_NO_WARNINGS
 
 template<typename T, std::size_t N>
 constexpr std::size_t lengthof(T(&)[N]) { return N; }

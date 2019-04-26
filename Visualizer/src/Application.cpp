@@ -29,7 +29,7 @@ int main(void)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(640, 480, "Visulazier", NULL, NULL);
+	window = glfwCreateWindow(960, 540, "Visulazier", NULL, NULL);
 	if (!window)
 	{
 		std::cout << "Error: Could not set up a window with an openGL context!" << std::endl;
@@ -59,10 +59,10 @@ int main(void)
 	{
 		/* Vertex positions*/
 		float positions[] = {
-			-0.5f, -0.5f, 0.0f, 0.0f,
-			 0.5f, -0.5f, 1.0f, 0.0f,
-			 0.5f,  0.5f, 1.0f, 1.0f,
-			-0.5f,  0.5f, 0.0f, 1.0f
+			 100.0f, 100.0f, 0.0f, 0.0f,
+			 200.0f, 100.0f, 1.0f, 0.0f,
+			 200.0f, 200.0f, 1.0f, 1.0f,
+			 100.0f, 200.0f, 0.0f, 1.0f
 		};
 
 		/* Triangle vertex indices (position[index])*/
@@ -88,11 +88,12 @@ int main(void)
 		/* Allocates and sets an index buffer for the data*/
 		IndexBuffer indexBuffer(indices, lengthof(indices));
 
-		glm::mat4 projection = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f);
+		/* Projection matrix*/
+		glm::mat4 projection = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f);
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0)); // Translates the camera
 
 		Shader shader("resources/shaders/Texture.shader");
 		shader.Bind();
-		shader.SetUniformMat4f("u_MVP", projection);
 		/* Retrives the location of the uniform "u_Color", used in the fragment shader*/
 		//shader.SetUniform4f("u_Color", 0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -110,6 +111,17 @@ int main(void)
 
 		Renderer renderer;
 
+		// Setup Dear ImGui context
+		ImGui::CreateContext();
+		// Setup Dear ImGui style
+		//ImGui::StyleColorsDark();
+		ImGui::StyleColorsLight();
+		// Setup Platform/Renderer bindings
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui_ImplOpenGL3_Init("#version 130");
+
+		glm::vec3 translation(200, 200, 0);
+
 		float rgb[] = { 0.0f, 0.0f, 0.0f };
 		float increment;
 		int channel = 2;
@@ -119,9 +131,18 @@ int main(void)
 		{
 			renderer.Clear();
 
+			// Start the Dear ImGui frame
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+
+			glm::mat4 model = glm::translate(glm::mat4(1.0f), translation); // Translates the model
+			glm::mat4 MVP = projection * view * model;
+
 			/* Sets the uniform used in the shader with name "u_Color"*/
 			shader.Bind();
 			//shader.SetUniform4f("u_Color", rgb[0], rgb[1], rgb[2], 1.0f);
+			shader.SetUniformMat4f("u_MVP", MVP);
 
 			renderer.Draw(vertexArray, indexBuffer, shader);
 
@@ -131,6 +152,25 @@ int main(void)
 				increment = -0.01f;
 			rgb[channel] += increment;
 
+			// ImGui
+			{
+				ImGui::Begin("Window");
+
+				ImGui::SliderFloat2("Translation", &translation.x, 0.0f, 960.0f);
+				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+				ImGui::End();
+			}
+
+			// Rendering ImGui
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			//int display_w, display_h;
+			//glfwMakeContextCurrent(window);
+			//glfwGetFramebufferSize(window, &display_w, &display_h);
+			//glViewport(0, 0, display_w, display_h);
+			//glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+			//glClear(GL_COLOR_BUFFER_BIT);
+
 			/* Swap front and back buffers */
 			glfwSwapBuffers(window);
 
@@ -138,6 +178,11 @@ int main(void)
 			glfwPollEvents();
 		}
 	}
+	// Cleanup
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
 	/* Closes and destroys the GLFW window*/
 	glfwDestroyWindow(window);
 

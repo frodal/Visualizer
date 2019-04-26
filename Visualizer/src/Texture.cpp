@@ -1,7 +1,7 @@
 #include "PreCompiledHeader.h"
 #include "Texture.h"
 
-#include "stb_image.h"
+#include "vendor/stb_image/stb_image.h"
 
 Texture::Texture(const std::string& path)
 	: rendererID(0), filepath(path), localBuffer(nullptr), width(0), height(0), BPP(0)
