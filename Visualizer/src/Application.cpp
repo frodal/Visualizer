@@ -59,10 +59,10 @@ int main(void)
 	{
 		/* Vertex positions*/
 		float positions[] = {
-			 100.0f, 100.0f, 0.0f, 0.0f,
-			 200.0f, 100.0f, 1.0f, 0.0f,
-			 200.0f, 200.0f, 1.0f, 1.0f,
-			 100.0f, 200.0f, 0.0f, 1.0f
+			 -50.0f,-50.0f, 0.0f, 0.0f,
+			  50.0f,-50.0f, 1.0f, 0.0f,
+			  50.0f, 50.0f, 1.0f, 1.0f,
+			 -50.0f, 50.0f, 0.0f, 1.0f
 		};
 
 		/* Triangle vertex indices (position[index])*/
@@ -90,7 +90,7 @@ int main(void)
 
 		/* Projection matrix*/
 		glm::mat4 projection = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f);
-		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0)); // Translates the camera
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0)); // Translates the camera
 
 		Shader shader("resources/shaders/Texture.shader");
 		shader.Bind();
@@ -120,7 +120,8 @@ int main(void)
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init("#version 130");
 
-		glm::vec3 translation(200, 200, 0);
+		glm::vec3 translationA(200, 200, 0);
+		glm::vec3 translationB(400, 200, 0);
 
 		float rgb[] = { 0.0f, 0.0f, 0.0f };
 		float increment;
@@ -136,15 +137,26 @@ int main(void)
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
-			glm::mat4 model = glm::translate(glm::mat4(1.0f), translation); // Translates the model
-			glm::mat4 MVP = projection * view * model;
+			{
+				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA); // Translates the model
+				glm::mat4 MVP = projection * view * model;
+				shader.Bind();
+				shader.SetUniformMat4f("u_MVP", MVP);
 
+				renderer.Draw(vertexArray, indexBuffer, shader);
+			}
 			/* Sets the uniform used in the shader with name "u_Color"*/
-			shader.Bind();
 			//shader.SetUniform4f("u_Color", rgb[0], rgb[1], rgb[2], 1.0f);
-			shader.SetUniformMat4f("u_MVP", MVP);
 
-			renderer.Draw(vertexArray, indexBuffer, shader);
+
+			{
+				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB); // Translates the model
+				glm::mat4 MVP = projection * view * model;
+				shader.Bind();
+				shader.SetUniformMat4f("u_MVP", MVP);
+
+				renderer.Draw(vertexArray, indexBuffer, shader);
+			}
 
 			if (rgb[channel] <= 0)
 				increment = 0.01f;
@@ -156,7 +168,8 @@ int main(void)
 			{
 				ImGui::Begin("Window");
 
-				ImGui::SliderFloat2("Translation", &translation.x, 0.0f, 960.0f);
+				ImGui::SliderFloat2("Translation A", &translationA.x, 0.0f, 960.0f);
+				ImGui::SliderFloat2("Translation B", &translationB.x, 0.0f, 960.0f);
 				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 				ImGui::End();
 			}
