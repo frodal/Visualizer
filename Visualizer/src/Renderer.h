@@ -8,6 +8,7 @@ class Renderer
 {
 public:
 	void Clear() const;
+	void SetClearColor(const glm::vec4& color) const;
 	void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) const;
 };
 

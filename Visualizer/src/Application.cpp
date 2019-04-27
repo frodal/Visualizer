@@ -4,12 +4,10 @@ See the documentation of OpenGL, e.g., http://docs.gl/
 */
 #include "PreCompiledHeader.h"
 #include "Renderer.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "VertexArray.h"
-#include "Shader.h"
-#include "VertexBufferLayout.h"
-#include "Texture.h"
+
+#include "tests/Test.h"
+#include "tests/TestClearColor.h"
+#include "tests/TestTexture2D.h"
 
 
 int main(void)
@@ -57,58 +55,6 @@ int main(void)
 	std::cout << "Current GLEW version:   " << glewGetString(GLEW_VERSION) << std::endl;
 	std::cout << "Current OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 	{
-		/* Vertex positions*/
-		float positions[] = {
-			 -50.0f,-50.0f, 0.0f, 0.0f,
-			  50.0f,-50.0f, 1.0f, 0.0f,
-			  50.0f, 50.0f, 1.0f, 1.0f,
-			 -50.0f, 50.0f, 0.0f, 1.0f
-		};
-
-		/* Triangle vertex indices (position[index])*/
-		unsigned int indices[] = {
-			0, 1, 2,
-			2, 3, 0
-		};
-
-		GLCall(glEnable(GL_BLEND));
-		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
-		/* Allocates and sets a vertex array to be used togheter with the array buffer below*/
-		VertexArray vertexArray;
-
-		/* Allocates and sets an array buffer for the vertex data*/
-		VertexBuffer vertexBuffer(positions, lengthof(positions) * sizeof(float));
-
-		VertexBufferLayout bufferLayout;
-		bufferLayout.Push<float>(2);
-		bufferLayout.Push<float>(2);
-		vertexArray.AddBuffer(vertexBuffer, bufferLayout);
-
-		/* Allocates and sets an index buffer for the data*/
-		IndexBuffer indexBuffer(indices, lengthof(indices));
-
-		/* Projection matrix*/
-		glm::mat4 projection = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f);
-		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0)); // Translates the camera
-
-		Shader shader("resources/shaders/Texture.shader");
-		shader.Bind();
-		/* Retrives the location of the uniform "u_Color", used in the fragment shader*/
-		//shader.SetUniform4f("u_Color", 0.0f, 0.0f, 0.0f, 1.0f);
-
-		Texture texture("resources/textures/Pyramids.png");
-		
-		unsigned int textureSlot = 0;
-		texture.Bind(textureSlot);
-		shader.SetUniform1i("u_Texture", textureSlot);
-
-		/* Clears the bound buffers and program/shader*/
-		vertexArray.UnBind();
-		shader.UnBind();
-		vertexBuffer.UnBind();
-		indexBuffer.UnBind();
-
 		Renderer renderer;
 
 		// Setup Dear ImGui context
@@ -116,20 +62,21 @@ int main(void)
 		// Setup Dear ImGui style
 		//ImGui::StyleColorsDark();
 		ImGui::StyleColorsLight();
-		// Setup Platform/Renderer bindings
+		// Setup Platform/Renderer bindings for ImGui
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init("#version 130");
 
-		glm::vec3 translationA(200, 200, 0);
-		glm::vec3 translationB(400, 200, 0);
+		Test::Test* currentTest = nullptr;
+		Test::TestMenu* testMenu = new Test::TestMenu(currentTest);
+		currentTest = testMenu;
 
-		float rgb[] = { 0.0f, 0.0f, 0.0f };
-		float increment;
-		int channel = 2;
+		testMenu->RegisterTest<Test::TestClearColor>("Clear color");
+		testMenu->RegisterTest<Test::TestTexture2D>("2D Texture");
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
 		{
+			renderer.SetClearColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 			renderer.Clear();
 
 			// Start the Dear ImGui frame
@@ -137,52 +84,23 @@ int main(void)
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
+			if (currentTest)
 			{
-				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA); // Translates the model
-				glm::mat4 MVP = projection * view * model;
-				shader.Bind();
-				shader.SetUniformMat4f("u_MVP", MVP);
-
-				renderer.Draw(vertexArray, indexBuffer, shader);
-			}
-			/* Sets the uniform used in the shader with name "u_Color"*/
-			//shader.SetUniform4f("u_Color", rgb[0], rgb[1], rgb[2], 1.0f);
-
-
-			{
-				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB); // Translates the model
-				glm::mat4 MVP = projection * view * model;
-				shader.Bind();
-				shader.SetUniformMat4f("u_MVP", MVP);
-
-				renderer.Draw(vertexArray, indexBuffer, shader);
-			}
-
-			if (rgb[channel] <= 0)
-				increment = 0.01f;
-			else if (rgb[channel] >= 1.0f)
-				increment = -0.01f;
-			rgb[channel] += increment;
-
-			// ImGui
-			{
-				ImGui::Begin("Window");
-
-				ImGui::SliderFloat2("Translation A", &translationA.x, 0.0f, 960.0f);
-				ImGui::SliderFloat2("Translation B", &translationB.x, 0.0f, 960.0f);
-				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+				currentTest->OnUpdate(0.0f);
+				currentTest->OnRender();
+				ImGui::Begin(currentTest->GetTestName().c_str());
+				currentTest->OnImGuiRender();
+				if (currentTest != testMenu && ImGui::Button("<- back"))
+				{
+					delete currentTest;
+					currentTest = testMenu;
+				}
 				ImGui::End();
 			}
 
 			// Rendering ImGui
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-			//int display_w, display_h;
-			//glfwMakeContextCurrent(window);
-			//glfwGetFramebufferSize(window, &display_w, &display_h);
-			//glViewport(0, 0, display_w, display_h);
-			//glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-			//glClear(GL_COLOR_BUFFER_BIT);
 
 			/* Swap front and back buffers */
 			glfwSwapBuffers(window);
@@ -190,7 +108,11 @@ int main(void)
 			/* Poll for and process events */
 			glfwPollEvents();
 		}
+		if (currentTest != testMenu)
+			delete testMenu;
+		delete currentTest;
 	}
+
 	// Cleanup
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();

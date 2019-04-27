@@ -9,6 +9,7 @@
 #include <sstream> // Standard String stream library for C++
 #include <vector> // Standard vector library for C++
 #include <unordered_map> // Standard C++ library
+#include <functional> // Standard C++ library
 
 #include "glm/glm/glm.hpp" // OpenGL Math library, see https://glm.g-truc.net/0.9.9/index.html
 #include "glm/glm/gtc/matrix_transform.hpp" // OpenGL Math library
