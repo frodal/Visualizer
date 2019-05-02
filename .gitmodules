@@ -4,6 +4,3 @@
 [submodule "Visualizer/src/vendor/stb"]
 	path = Visualizer/src/vendor/stb
 	url = https://github.com/nothings/stb
-[submodule "Visualizer/src/vendor/imgui"]
-	path = Visualizer/src/vendor/imgui
-	url = https://github.com/ocornut/imgui
