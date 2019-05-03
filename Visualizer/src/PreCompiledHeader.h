@@ -1,29 +1,33 @@
 #pragma once
 
+// Helper libraries for creating a OpenGL contex windows and retriving OpenGL functions from the graphics driver
 #include <GL/glew.h> // See http://glew.sourceforge.net/ for the documentation and to download the newest version!
 #include <GLFW/glfw3.h> // See https://www.glfw.org/ for the documentation and to download the newest version!
 
-#include <iostream> // Standard I/O library for C++
+// Standard C++ libraries
+#include <iostream> // Standard I/O library
 #include <fstream> // Used for reading files such as the vertex and fragment shader source
-#include <string> // Standard string library for C++
-#include <sstream> // Standard String stream library for C++
-#include <vector> // Standard vector library for C++
-#include <unordered_map> // Standard C++ library
-#include <functional> // Standard C++ library
+#include <string> // Standard string library
+#include <sstream> // Standard String stream library
+#include <vector> // Standard vector library
+#include <unordered_map> // Standard unordered map library
+#include <functional> // Standard functional library
 
-#include "glm/glm/glm.hpp" // OpenGL Math library, see https://glm.g-truc.net/0.9.9/index.html
-#include "glm/glm/gtc/matrix_transform.hpp" // OpenGL Math library
+// OpenGL Math library, see https://glm.g-truc.net/0.9.9/index.html
+#include "glm/glm/glm.hpp"
+#include "glm/glm/gtc/matrix_transform.hpp"
 
-#include "Imgui/imgui.h" // Dear ImGui: Bloat-free Immediate Mode Graphical User interface for C++ with minimal dependencies, see https://github.com/ocornut/imgui
-#include "Imgui/imgui_impl_opengl3.h"
-#include "Imgui/imgui_impl_glfw.h"
+// Dear ImGui: Bloat-free Immediate Mode Graphical User interface for C++ with minimal dependencies, see https://github.com/ocornut/imgui
+#define IMGUI_IMPL_OPENGL_LOADER_GLEW
+#include "imgui/imgui.h"
+#include "imgui/examples/imgui_impl_opengl3.h"
+#include "imgui/examples/imgui_impl_glfw.h"
 
-#define _CRT_SECURE_NO_WARNINGS
-
+// Handy template to get the length of an array
 template<typename T, std::size_t N>
 constexpr std::size_t lengthof(T(&)[N]) { return N; }
 
-/* Defines some error checking macros to be used with OpenGL*/
+// Defines some error checking macros to be used with OpenGL
 #define ASSERT(x) if (!(x)) __debugbreak();
 #define GLCall(x) GLClearError();\
 	x;\
