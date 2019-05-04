@@ -7,3 +7,6 @@
 [submodule "Visualizer/vendor/glm"]
 	path = Visualizer/vendor/glm
 	url = git@github.com:g-truc/glm.git
+[submodule "Visualizer/vendor/stb"]
+	path = Visualizer/vendor/stb
+	url = git@github.com:nothings/stb.git

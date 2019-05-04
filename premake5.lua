@@ -16,6 +16,7 @@ IncludeDir["GLFW"]  = "Visualizer/vendor/glfw/include"
 IncludeDir["GLEW"]  = "Dependencies/GLEW-2.1.0/include"
 IncludeDir["ImGui"] = "Visualizer/vendor/imgui"
 IncludeDir["glm"]   = "Visualizer/vendor/glm"
+IncludeDir["stb"]   = "Visualizer/vendor/stb"
 
 VendorDir = {}
 VendorDir["GLFW"] = "Visualizer/vendor/glfw"
@@ -41,12 +42,8 @@ project "Visualizer"
 
 	files
 	{
-		"%{prj.name}/src/*.h",
-        "%{prj.name}/src/*.cpp",
-        "%{prj.name}/src/tests/**.h",
-        "%{prj.name}/src/tests/**.cpp",
-        "%{prj.name}/src/vendor/*.h",
-        "%{prj.name}/src/vendor/*.cpp",
+		"%{prj.name}/src/**.h",
+        "%{prj.name}/src/**.cpp",
         "%{prj.name}/vendor/glm/glm/**.hpp",
         "%{prj.name}/vendor/glm/glm/**.h",
 		"%{prj.name}/vendor/glm/glm/**.inl"
@@ -55,11 +52,11 @@ project "Visualizer"
 	includedirs
 	{
         "%{prj.name}/src",
-        "%{prj.name}/src/vendor",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLEW}",
         "%{IncludeDir.ImGui}",
-        "%{IncludeDir.glm}"
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.stb}"
 	}
 
 	links 
@@ -154,16 +151,8 @@ project "GLFW"
     
         files
         {
-            "%{VendorDir.ImGui}/imconfig.h",
-            "%{VendorDir.ImGui}/imgui.h",
-            "%{VendorDir.ImGui}/imgui.cpp",
-            "%{VendorDir.ImGui}/imgui_draw.cpp",
-            "%{VendorDir.ImGui}/imgui_internal.h",
-            "%{VendorDir.ImGui}/imgui_widgets.cpp",
-            "%{VendorDir.ImGui}/imstb_rectpack.h",
-            "%{VendorDir.ImGui}/imstb_textedit.h",
-            "%{VendorDir.ImGui}/imstb_truetype.h",
-            "%{VendorDir.ImGui}/imgui_demo.cpp"
+            "%{VendorDir.ImGui}/*.h",
+            "%{VendorDir.ImGui}/*.cpp",
         }
         
         filter "system:windows"
