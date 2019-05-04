@@ -1,6 +1,3 @@
-[submodule "Visualizer/src/vendor/stb"]
-	path = Visualizer/src/vendor/stb
-	url = https://github.com/nothings/stb
 [submodule "Visualizer/vendor/glfw"]
 	path = Visualizer/vendor/glfw
 	url = git@github.com:glfw/glfw.git
