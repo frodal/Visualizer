@@ -19,9 +19,9 @@
 
 // Dear ImGui: Bloat-free Immediate Mode Graphical User interface for C++ with minimal dependencies, see https://github.com/ocornut/imgui
 #define IMGUI_IMPL_OPENGL_LOADER_GLEW
-#include "imgui/imgui.h"
-#include "imgui/examples/imgui_impl_opengl3.h"
-#include "imgui/examples/imgui_impl_glfw.h"
+#include "imgui.h"
+#include "examples/imgui_impl_opengl3.h"
+#include "examples/imgui_impl_glfw.h"
 
 // Handy template to get the length of an array
 template<typename T, std::size_t N>

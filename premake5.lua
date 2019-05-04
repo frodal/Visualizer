@@ -14,10 +14,11 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "Visualizer/vendor/glfw/include"
 IncludeDir["GLEW"] = "Dependencies/GLEW-2.1.0/include"
-IncludeDir["ImGui"] = "Visualizer/src/vendor/imgui"
+IncludeDir["ImGui"] = "Visualizer/vendor/imgui"
 
 VendorDir = {}
 VendorDir["GLFW"] = "Visualizer/vendor/glfw"
+VendorDir["ImGui"] = IncludeDir["ImGui"]
 
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
@@ -45,8 +46,6 @@ project "Visualizer"
         "%{prj.name}/src/tests/**.cpp",
         "%{prj.name}/src/vendor/*.h",
         "%{prj.name}/src/vendor/*.cpp",
-        "%{prj.name}/src/vendor/imgui/*.h",
-		"%{prj.name}/src/vendor/imgui/*.cpp",
         "%{prj.name}/src/vendor/glm/glm/**.hpp",
         "%{prj.name}/src/vendor/glm/glm/**.h",
 		"%{prj.name}/src/vendor/glm/glm/**.inl"
@@ -63,14 +62,11 @@ project "Visualizer"
 
 	links 
 	{ 
-        --"Dependencies/GLFW-3.3/lib-vc2019/Win64/glfw3.lib",
         "GLFW",
+        "ImGui",
 		"Dependencies/GLEW-2.1.0/lib/Win64/glew32s.lib",
 		"opengl32.lib"
     }
-    
-    filter "files:Visualizer/src/vendor/imgui/*.cpp"
-        flags { 'NoPCH' }
 
 	filter "system:windows"
 		cppdialect "C++17"
@@ -141,3 +137,37 @@ project "GLFW"
 		}
     filter { "system:windows", "configurations:Release" }
         buildoptions "/MT"
+
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+-- ImGui                                                                                --
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+        project "ImGui"
+        kind "StaticLib"
+        language "C++"
+        
+        targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+        objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
+    
+        files
+        {
+            "%{VendorDir.ImGui}/imconfig.h",
+            "%{VendorDir.ImGui}/imgui.h",
+            "%{VendorDir.ImGui}/imgui.cpp",
+            "%{VendorDir.ImGui}/imgui_draw.cpp",
+            "%{VendorDir.ImGui}/imgui_internal.h",
+            "%{VendorDir.ImGui}/imgui_widgets.cpp",
+            "%{VendorDir.ImGui}/imstb_rectpack.h",
+            "%{VendorDir.ImGui}/imstb_textedit.h",
+            "%{VendorDir.ImGui}/imstb_truetype.h",
+            "%{VendorDir.ImGui}/imgui_demo.cpp"
+        }
+        
+        filter "system:windows"
+            systemversion "latest"
+            cppdialect "C++17"
+            staticruntime "On"
+            
+        filter { "system:windows", "configurations:Release" }
+            buildoptions "/MT"
