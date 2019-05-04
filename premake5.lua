@@ -12,13 +12,12 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["GLFW"] = "Dependencies/GLFW-3.3/include"
+IncludeDir["GLFW"] = "Visualizer/vendor/glfw/include"
 IncludeDir["GLEW"] = "Dependencies/GLEW-2.1.0/include"
 IncludeDir["ImGui"] = "Visualizer/src/vendor/imgui"
 
---include "Hazel/vendor/GLFW"
---include "Hazel/vendor/Glad"
---include "Hazel/vendor/imgui"
+VendorDir = {}
+VendorDir["GLFW"] = "Visualizer/vendor/glfw"
 
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
@@ -64,7 +63,8 @@ project "Visualizer"
 
 	links 
 	{ 
-		"Dependencies/GLFW-3.3/lib-vc2019/Win64/glfw3.lib",
+        --"Dependencies/GLFW-3.3/lib-vc2019/Win64/glfw3.lib",
+        "GLFW",
 		"Dependencies/GLEW-2.1.0/lib/Win64/glew32s.lib",
 		"opengl32.lib"
     }
@@ -94,6 +94,50 @@ project "Visualizer"
 
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
---                                                                                      --
+-- GLFW                                                                                 --
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
+project "GLFW"
+    kind "StaticLib"
+    language "C"
+    
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+        "%{VendorDir.GLFW}/include/GLFW/glfw3.h",
+        "%{VendorDir.GLFW}/include/GLFW/glfw3native.h",
+        "%{VendorDir.GLFW}/src/glfw_config.h",
+        "%{VendorDir.GLFW}/src/context.c",
+        "%{VendorDir.GLFW}/src/init.c",
+        "%{VendorDir.GLFW}/src/input.c",
+        "%{VendorDir.GLFW}/src/monitor.c",
+        "%{VendorDir.GLFW}/src/vulkan.c",
+        "%{VendorDir.GLFW}/src/window.c"
+    }
+    
+	filter "system:windows"
+        systemversion "latest"
+        staticruntime "On"
+        
+        files
+        {
+            "%{VendorDir.GLFW}/src/win32_init.c",
+            "%{VendorDir.GLFW}/src/win32_joystick.c",
+            "%{VendorDir.GLFW}/src/win32_monitor.c",
+            "%{VendorDir.GLFW}/src/win32_time.c",
+            "%{VendorDir.GLFW}/src/win32_thread.c",
+            "%{VendorDir.GLFW}/src/win32_window.c",
+            "%{VendorDir.GLFW}/src/wgl_context.c",
+            "%{VendorDir.GLFW}/src/egl_context.c",
+            "%{VendorDir.GLFW}/src/osmesa_context.c"
+        }
+
+		defines 
+		{ 
+            "_GLFW_WIN32",
+            "_CRT_SECURE_NO_WARNINGS"
+		}
+    filter { "system:windows", "configurations:Release" }
+        buildoptions "/MT"
