@@ -1,9 +1,12 @@
-[submodule "Visualizer/src/vendor/glm"]
-	path = Visualizer/src/vendor/glm
-	url = https://github.com/g-truc/glm.git
-[submodule "Visualizer/src/vendor/stb"]
-	path = Visualizer/src/vendor/stb
-	url = https://github.com/nothings/stb
-[submodule "Visualizer/src/vendor/imgui"]
-	path = Visualizer/src/vendor/imgui
-	url = https://github.com/ocornut/imgui.git
+[submodule "Visualizer/vendor/glfw"]
+	path = Visualizer/vendor/glfw
+	url = git@github.com:glfw/glfw.git
+[submodule "Visualizer/vendor/imgui"]
+	path = Visualizer/vendor/imgui
+	url = git@github.com:ocornut/imgui.git
+[submodule "Visualizer/vendor/glm"]
+	path = Visualizer/vendor/glm
+	url = git@github.com:g-truc/glm.git
+[submodule "Visualizer/vendor/stb"]
+	path = Visualizer/vendor/stb
+	url = git@github.com:nothings/stb.git
