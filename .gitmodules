@@ -7,3 +7,9 @@
 [submodule "Visualizer/src/vendor/imgui"]
 	path = Visualizer/src/vendor/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "Visualizer/vendor/glfw"]
+	path = Visualizer/vendor/glfw
+	url = git@github.com:glfw/glfw.git
+[submodule "Visualizer/vendor/glew"]
+	path = Visualizer/vendor/glew
+	url = git@github.com:nigels-com/glew.git
