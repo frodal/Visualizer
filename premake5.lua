@@ -12,9 +12,10 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["GLFW"] = "Visualizer/vendor/glfw/include"
-IncludeDir["GLEW"] = "Dependencies/GLEW-2.1.0/include"
+IncludeDir["GLFW"]  = "Visualizer/vendor/glfw/include"
+IncludeDir["GLEW"]  = "Dependencies/GLEW-2.1.0/include"
 IncludeDir["ImGui"] = "Visualizer/vendor/imgui"
+IncludeDir["glm"]   = "Visualizer/vendor/glm"
 
 VendorDir = {}
 VendorDir["GLFW"] = "Visualizer/vendor/glfw"
@@ -46,9 +47,9 @@ project "Visualizer"
         "%{prj.name}/src/tests/**.cpp",
         "%{prj.name}/src/vendor/*.h",
         "%{prj.name}/src/vendor/*.cpp",
-        "%{prj.name}/src/vendor/glm/glm/**.hpp",
-        "%{prj.name}/src/vendor/glm/glm/**.h",
-		"%{prj.name}/src/vendor/glm/glm/**.inl"
+        "%{prj.name}/vendor/glm/glm/**.hpp",
+        "%{prj.name}/vendor/glm/glm/**.h",
+		"%{prj.name}/vendor/glm/glm/**.inl"
 	}
 
 	includedirs
@@ -57,7 +58,8 @@ project "Visualizer"
         "%{prj.name}/src/vendor",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLEW}",
-		"%{IncludeDir.ImGui}"
+        "%{IncludeDir.ImGui}",
+        "%{IncludeDir.glm}"
 	}
 
 	links 

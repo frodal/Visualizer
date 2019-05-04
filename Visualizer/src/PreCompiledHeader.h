@@ -14,8 +14,8 @@
 #include <functional> // Standard functional library
 
 // OpenGL Math library, see https://glm.g-truc.net/0.9.9/index.html
-#include "glm/glm/glm.hpp"
-#include "glm/glm/gtc/matrix_transform.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 // Dear ImGui: Bloat-free Immediate Mode Graphical User interface for C++ with minimal dependencies, see https://github.com/ocornut/imgui
 #define IMGUI_IMPL_OPENGL_LOADER_GLEW

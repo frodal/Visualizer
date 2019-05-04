@@ -7,3 +7,6 @@
 [submodule "Visualizer/vendor/imgui"]
 	path = Visualizer/vendor/imgui
 	url = git@github.com:ocornut/imgui.git
+[submodule "Visualizer/vendor/glm"]
+	path = Visualizer/vendor/glm
+	url = git@github.com:g-truc/glm.git
