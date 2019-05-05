@@ -62,8 +62,6 @@ namespace Test {
 
 		texture->Bind(textureSlot);
 
-		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
-
 		{
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA); // Translates the model
 			glm::mat4 MVP = projection * view * model;
