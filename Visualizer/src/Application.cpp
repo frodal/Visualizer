@@ -8,6 +8,7 @@ See the documentation of OpenGL, e.g., http://docs.gl/
 #include "tests/Test.h"
 #include "tests/TestClearColor.h"
 #include "tests/TestTexture2D.h"
+#include "tests/TestDiscreteCircle.h"
 
 
 int main(void)
@@ -71,7 +72,8 @@ int main(void)
 		currentTest = testMenu;
 
 		testMenu->RegisterTest<Test::TestClearColor>("Clear color");
-		testMenu->RegisterTest<Test::TestTexture2D>("2D Texture");
+		testMenu->RegisterTest<Test::TestTexture2D>("2D texture");
+		testMenu->RegisterTest<Test::TestDiscreteCircle>("Discrete circle");
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
