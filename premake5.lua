@@ -4,14 +4,14 @@
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 workspace "Visualizer"
-	architecture "x64"
-	startproject "Visualizer"
+    architecture "x64"
+    startproject "Visualizer"
 
-	configurations
-	{
-		"Debug",
-		"Release"
-	}
+    configurations
+    {
+        "Debug",
+        "Release"
+    }
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
@@ -34,41 +34,42 @@ VendorDir["ImGui"] = IncludeDir["ImGui"]
 ------------------------------------------------------------------------------------------
 
 project "Visualizer"
-	location "Visualizer"
-	kind "ConsoleApp"
-	language "C++"
-	staticruntime "off"
+    location "Visualizer"
+    kind "ConsoleApp"
+    language "C++"
+    cppdialect "C++17"
+    staticruntime "off"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "PreCompiledHeader.h"
-	pchsource "Visualizer/src/PreCompiledHeader.cpp"
+    pchheader "PreCompiledHeader.h"
+    pchsource "Visualizer/src/PreCompiledHeader.cpp"
 
-	files
-	{
-		"%{prj.name}/src/**.h",
+    files
+    {
+        "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp",
         "%{prj.name}/vendor/glm/glm/**.hpp",
         "%{prj.name}/vendor/glm/glm/**.h",
-		"%{prj.name}/vendor/glm/glm/**.inl"
-	}
+        "%{prj.name}/vendor/glm/glm/**.inl"
+    }
 
-	includedirs
-	{
+    includedirs
+    {
         "%{prj.name}/src",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.GLEW}",
+        "%{IncludeDir.GLFW}",
+        "%{IncludeDir.GLEW}",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.stb}"
-	}
+    }
 
-	links 
-	{ 
+    links 
+    { 
         "GLFW",
         "ImGui",
-		"opengl32.lib"
+        "opengl32.lib"
     }
 
     filter "architecture:x64"
@@ -83,25 +84,22 @@ project "Visualizer"
             "Visualizer/vendor/GLEW-2.1.0/lib/Win32/glew32s.lib"
         }
 
-	filter "system:windows"
-		cppdialect "C++17"
-		systemversion "latest"
+    filter "system:windows"
+        systemversion "latest"
 
-		defines
-		{
-			"GLEW_STATIC",
-			"_CRT_SECURE_NO_WARNINGS"
-		}
+        defines
+        {
+            "GLEW_STATIC",
+            "_CRT_SECURE_NO_WARNINGS"
+        }
 
-	filter "configurations:Debug"
-		defines "HZ_DEBUG"
-		runtime "Debug"
-		symbols "On"
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "on"
 
-	filter "configurations:Release"
-		defines "HZ_RELEASE"
-		runtime "Release"
-		optimize "On"
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "on"
 
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
@@ -111,12 +109,13 @@ project "Visualizer"
 project "GLFW"
     kind "StaticLib"
     language "C"
+    staticruntime "On"
     
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
 
-	files
-	{
+    files
+    {
         "%{VendorDir.GLFW}/include/GLFW/glfw3.h",
         "%{VendorDir.GLFW}/include/GLFW/glfw3native.h",
         "%{VendorDir.GLFW}/src/glfw_config.h",
@@ -128,9 +127,8 @@ project "GLFW"
         "%{VendorDir.GLFW}/src/window.c"
     }
     
-	filter "system:windows"
+    filter "system:windows"
         systemversion "latest"
-        staticruntime "On"
         
         files
         {
@@ -145,36 +143,47 @@ project "GLFW"
             "%{VendorDir.GLFW}/src/osmesa_context.c"
         }
 
-		defines 
-		{ 
+        defines 
+        { 
             "_GLFW_WIN32",
             "_CRT_SECURE_NO_WARNINGS"
-		}
-    filter { "system:windows", "configurations:Release" }
-        buildoptions "/MT"
+        }
+    
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "on"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "on"
 
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 -- ImGui                                                                                --
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-        project "ImGui"
-        kind "StaticLib"
-        language "C++"
+project "ImGui"
+    kind "StaticLib"
+    language "C++"
+    cppdialect "C++17"
+    staticruntime "On"
         
-        targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-        objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
     
-        files
-        {
-            "%{VendorDir.ImGui}/*.h",
-            "%{VendorDir.ImGui}/*.cpp",
-        }
-        
-        filter "system:windows"
-            systemversion "latest"
-            cppdialect "C++17"
-            staticruntime "On"
-            
-        filter { "system:windows", "configurations:Release" }
-            buildoptions "/MT"
+    files
+    {
+        "%{VendorDir.ImGui}/*.h",
+        "%{VendorDir.ImGui}/*.cpp",
+    }
+    
+    filter "system:windows"
+        systemversion "latest"
+
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "on"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "on"
