@@ -4,9 +4,8 @@
 namespace Test {
 
 	TestClearColor::TestClearColor(std::string& name)
-		: clearColor{ 0.0f, 0.0f, 1.0f, 1.0f }
+		: Test(name), clearColor{ 0.0f, 0.0f, 1.0f, 1.0f }
 	{
-		testName = name;
 	}
 
 	TestClearColor::~TestClearColor()

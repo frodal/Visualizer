@@ -39,6 +39,7 @@ int main(void)
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
 
+	/* Sets v-sync*/
 	glfwSwapInterval(1);
 
 	/* Initialize the GLEW library (Needs a valid OpenGL rendering context)*/

@@ -6,12 +6,10 @@
 namespace Test {
 
 	TestTexture2D::TestTexture2D(std::string& name)
-		: textureSlot(0), projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f)),
+		: Test(name), textureSlot(0), projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f)),
 		view(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
 		translationA(200, 200, 0), translationB(400, 200, 0)
 	{
-		testName = name;
-
 		/* Vertex positions*/
 		float positions[] = {
 			 -50.0f,-50.0f, 0.0f, 0.0f,

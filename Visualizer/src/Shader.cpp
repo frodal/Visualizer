@@ -6,6 +6,12 @@ Shader::Shader(const std::string& _filepath)
 	: filepath(_filepath), rendererID(0)
 {
 	ShaderProgramSource source = ParseShader(_filepath);
+	if (source.FragmentSource.empty() || source.VertexSource.empty())
+	{
+		std::cout << "Warning: Did not find shader source file '" << _filepath << "'" << std::endl;
+		std::cout << "The default shader will be used!" << std::endl;
+		source = DefaultShaderSource();
+	}
 	rendererID = CreateShader(source.VertexSource, source.FragmentSource);
 }
 
@@ -85,6 +91,34 @@ ShaderProgramSource Shader::ParseShader(const std::string& _filepath)
 		}
 	}
 	return { ss[(int)ShaderType::VERTEX].str(), ss[(int)ShaderType::FRAGMENT].str() };
+}
+
+ShaderProgramSource Shader::DefaultShaderSource()
+{
+	const char* vertexSource =
+		"#version 330 core\n"
+		"\n"
+		"layout(location = 0) in vec4 position;\n"
+		"\n"
+		"\n"
+		"uniform mat4 u_MVP;\n"
+		"\n"
+		"void main()\n"
+		"{\n"
+		"	gl_Position = u_MVP * position;\n"
+		"};\n";
+	const char* fragmentSource =
+		"#version 330 core\n"
+		"\n"
+		"layout(location = 0) out vec4 color;\n"
+		"\n"
+		"\n"
+		"\n"
+		"void main()\n"
+		"{\n"
+		"	color = vec4(1.0, 1.0, 1.0, 1.0);\n"
+		"};\n";
+	return { vertexSource ,fragmentSource };
 }
 
 unsigned int Shader::CompileShader(unsigned int type, const std::string& source)

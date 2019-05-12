@@ -10,13 +10,11 @@
 namespace Test {
 
 	TestDiscreteCircle::TestDiscreteCircle(std::string& name)
-		: projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f)),
+		: Test(name), projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f)),
 		view(glm::translate(glm::mat4(1.0f), glm::vec3(480, 270, 0))),
 		model(glm::mat4(1.0f)),Ntriangles(6),radius(200),
 		circleColor{ 0.0f, 0.0f, 1.0f, 1.0f }, backgroundColor{ 0.0f, 0.0f, 0.0f, 1.0f }
 	{
-		testName = name;
-
 		shader = std::make_unique<Shader>("resources/shaders/ClearColor.shader");
 		shader->Bind();
 		shader->SetUniform4f("u_Color", circleColor[0], circleColor[1], circleColor[2], circleColor[3]);
