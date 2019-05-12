@@ -27,6 +27,7 @@ private:
 	std::unordered_map<std::string, int> uniformLocationCache;
 
 	ShaderProgramSource ParseShader(const std::string& _filepath);
+	ShaderProgramSource DefaultShaderSource();
 	unsigned int CompileShader(unsigned int type, const std::string& source);
 	unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
 	int GetUniformLocation(const std::string& name);

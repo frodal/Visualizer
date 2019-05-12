@@ -4,9 +4,8 @@
 namespace Test {
 
 	TestMenu::TestMenu(Test*& currentTestPointer)
-		: currentTest(currentTestPointer)
+		: Test("Menu"), currentTest(currentTestPointer)
 	{
-		testName = "Menu";
 	}
 
 	void TestMenu::OnImGuiRender()
