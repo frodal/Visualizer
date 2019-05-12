@@ -8,6 +8,7 @@ namespace Test {
 	public:
 		Test() : testName("Unknown") {}
 		Test(std::string& name) : testName(name) {};
+		Test(const char* name) : testName(name) {};
 		virtual ~Test() {}
 
 		virtual void OnUpdate(float deltaTime) {}
