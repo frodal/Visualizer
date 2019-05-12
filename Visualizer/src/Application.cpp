@@ -11,6 +11,12 @@ See the documentation of OpenGL, e.g., http://docs.gl/
 #include "tests/TestDiscreteCircle.h"
 
 
+/* Initial window width and height */
+constexpr unsigned int WIDTH = 960;
+constexpr unsigned int HEIGHT = 540;
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+
 int main(void)
 {
 	GLFWwindow* window;
@@ -28,7 +34,7 @@ int main(void)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(960, 540, "Visulazier", NULL, NULL);
+	window = glfwCreateWindow(WIDTH, HEIGHT, "Visulazier", NULL, NULL);
 	if (!window)
 	{
 		std::cout << "Error: Could not set up a window with an openGL context!" << std::endl;
@@ -41,6 +47,9 @@ int main(void)
 
 	/* Sets v-sync*/
 	glfwSwapInterval(1);
+
+	/* Set GLFW Callbacks*/
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	/* Initialize the GLEW library (Needs a valid OpenGL rendering context)*/
 	GLenum message = glewInit();
@@ -127,4 +136,9 @@ int main(void)
 	/* Terminates the GLFW context*/
 	glfwTerminate();
 	return 0;
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
 }
