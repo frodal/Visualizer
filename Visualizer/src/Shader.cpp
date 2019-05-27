@@ -155,7 +155,43 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
 	GLCall(glAttachShader(program, vs));
 	GLCall(glAttachShader(program, fs));
 	GLCall(glLinkProgram(program));
+
+	// Check if Link was successful
+	int result;
+	GLCall(glGetProgramiv(program, GL_LINK_STATUS, &result));
+	if (result == GL_FALSE)
+	{
+		int length;
+		GLCall(glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length));
+		char* message = (char*)_malloca(length * sizeof(char));
+		GLCall(glGetProgramInfoLog(program, length, &length, message));
+		std::cout << "Failed to link shader!" << std::endl;
+		std::cout << message << std::endl;
+		GLCall(glDeleteProgram(program));
+		GLCall(glDeleteShader(vs));
+		GLCall(glDeleteShader(fs));
+		_freea(message);
+		return 0;
+	}
+	
+	// Checks to see whether the executables contained in program can execute given the current OpenGL state
 	GLCall(glValidateProgram(program));
+
+	GLCall(glGetProgramiv(program, GL_VALIDATE_STATUS, &result));
+	if (result == GL_FALSE)
+	{
+		int length;
+		GLCall(glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length));
+		char* message = (char*)_malloca(length * sizeof(char));
+		GLCall(glGetProgramInfoLog(program, length, &length, message));
+		std::cout << "Failed to validate shader program!" << std::endl;
+		std::cout << message << std::endl;
+		GLCall(glDeleteProgram(program));
+		GLCall(glDeleteShader(vs));
+		GLCall(glDeleteShader(fs));
+		_freea(message);
+		return 0;
+	}
 
 	GLCall(glDeleteShader(vs));
 	GLCall(glDeleteShader(fs));
