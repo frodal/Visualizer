@@ -12,6 +12,13 @@ void Renderer::SetClearColor(const glm::vec4& color) const
 	GLCall(glClearColor(color.r, color.g, color.b, color.a));
 }
 
+void Renderer::EnableBlend() const
+{
+	/* Enable blending*/
+	GLCall(glEnable(GL_BLEND));
+	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+}
+
 void Renderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) const
 {
 	shader.Bind();

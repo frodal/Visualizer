@@ -24,9 +24,8 @@ namespace Test {
 			2, 3, 0
 		};
 
-		/* Enable blending*/
-		GLCall(glEnable(GL_BLEND));
-		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+		Renderer renderer;
+		renderer.EnableBlend();
 
 		vertexArray = std::make_unique<VertexArray>();
 		vertexBuffer = std::make_unique<VertexBuffer>(positions, lengthof(positions) * sizeof(float));
@@ -54,10 +53,9 @@ namespace Test {
 
 	void TestTexture2D::OnRender()
 	{
-		GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
-		GLCall(glClear(GL_COLOR_BUFFER_BIT));
-
 		Renderer renderer;
+		renderer.SetClearColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+		renderer.Clear();
 
 		texture->Bind(textureSlot);
 

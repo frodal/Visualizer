@@ -1,5 +1,6 @@
 #include "PreCompiledHeader.h"
 #include "TestClearColor.h"
+#include "Renderer.h"
 
 namespace Test {
 
@@ -18,8 +19,9 @@ namespace Test {
 
 	void TestClearColor::OnRender()
 	{
-		GLCall(glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]));
-		GLCall(glClear(GL_COLOR_BUFFER_BIT));
+		Renderer renderer;
+		renderer.SetClearColor(glm::vec4(clearColor[0], clearColor[1], clearColor[2], clearColor[3]));
+		renderer.Clear();
 	}
 
 	void TestClearColor::OnImGuiRender()
