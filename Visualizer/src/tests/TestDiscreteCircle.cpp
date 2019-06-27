@@ -41,8 +41,8 @@ namespace Test {
 		positions[1] = 0.0f;
 		for (int i = 1; i < Ntriangles + 1; i++)
 		{
-			positions[i*2] = glm::cos(-2 * glm::pi<float>() * (i - 1) / (float)Ntriangles);
-			positions[i*2 + 1] = glm::sin(-2 * glm::pi<float>() * (i - 1) / (float)Ntriangles);
+			positions[i*2] = glm::cos(-2 * glm::pi<float>() * (i - 1) / static_cast<float>(Ntriangles));
+			positions[i*2 + 1] = glm::sin(-2 * glm::pi<float>() * (i - 1) / static_cast<float>(Ntriangles));
 		}
 
 		unsigned int* indices = new unsigned int[(size_t)Ntriangles * 3];
