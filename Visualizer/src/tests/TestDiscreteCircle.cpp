@@ -34,6 +34,7 @@ namespace Test {
 
 		renderer.SetClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
 		renderer.Clear();
+		renderer.EnableBlend();
 
 		float* positions = new float[(static_cast<size_t>(Ntriangles) + 1) * 2];
 
