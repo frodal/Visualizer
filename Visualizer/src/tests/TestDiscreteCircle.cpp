@@ -10,11 +10,14 @@
 namespace Test {
 
 	TestDiscreteCircle::TestDiscreteCircle(std::string& name)
-		: Test(name), projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f)),
-		view(glm::translate(glm::mat4(1.0f), glm::vec3(480, 270, 0))),
+		: Test(name), projection(glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f)),
+		view(glm::translate(glm::mat4(1.0f), glm::vec3(640, 360, 0))),
 		model(glm::mat4(1.0f)),Ntriangles(6),radius(200),
 		circleColor{ 0.0f, 0.0f, 1.0f, 1.0f }, backgroundColor{ 0.0f, 0.0f, 0.0f, 1.0f }
 	{
+		Renderer renderer;
+		renderer.EnableBlend();
+
 		shader = std::make_unique<Shader>("resources/shaders/ClearColor.shader");
 		shader->Bind();
 		shader->SetUniform4f("u_Color", circleColor[0], circleColor[1], circleColor[2], circleColor[3]);
@@ -34,7 +37,6 @@ namespace Test {
 
 		renderer.SetClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
 		renderer.Clear();
-		renderer.EnableBlend();
 
 		float* positions = new float[(static_cast<size_t>(Ntriangles) + 1) * 2];
 
@@ -78,7 +80,7 @@ namespace Test {
 	void TestDiscreteCircle::OnImGuiRender()
 	{
 		ImGui::SliderInt("Number of triangles", &Ntriangles, 3, 100);
-		ImGui::SliderFloat("Radius", &radius, 0.0f, 600.0f);
+		ImGui::SliderFloat("Radius", &radius, 0.0f, 400.0f);
 		ImGui::ColorEdit4("Circle color", circleColor);
 		ImGui::ColorEdit4("Background color", backgroundColor);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);

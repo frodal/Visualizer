@@ -11,6 +11,7 @@ See the documentation of OpenGL, e.g., http://docs.gl/
 #include "tests/TestClearColor.h"
 #include "tests/TestTexture2D.h"
 #include "tests/TestDiscreteCircle.h"
+#include "tests/Test3DCube.h"
 
 
 /* Initial window title, width, height and Vsync setting */
@@ -44,6 +45,7 @@ int main(void)
 		testMenu->RegisterTest<Test::TestClearColor>("Clear color");
 		testMenu->RegisterTest<Test::TestTexture2D>("2D texture");
 		testMenu->RegisterTest<Test::TestDiscreteCircle>("Discrete circle");
+		testMenu->RegisterTest<Test::Test3DCube>("3D Cube");
 
 		/* Loop until the user closes the window */
 		while (!window.ShouldClose())

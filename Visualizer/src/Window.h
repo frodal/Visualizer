@@ -28,7 +28,7 @@ public:
 	void SetVSync(bool enabled);
 	inline bool IsVSync() const { return windowprops.Vsync; }
 
-	inline double GetTime() const { return glfwGetTime(); }
+	static inline double GetTime() { return glfwGetTime(); }
 	double GetDeltaTime();
 
 	inline GLFWwindow* GetNativeWindow() const { return window; }
