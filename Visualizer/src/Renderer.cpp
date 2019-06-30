@@ -12,6 +12,11 @@ void Renderer::SetClearColor(const glm::vec4& color) const
 	GLCall(glClearColor(color.r, color.g, color.b, color.a));
 }
 
+void Renderer::SetClearColor(const float& r, const float& g, const float& b, const float& a) const
+{
+	GLCall(glClearColor(r, g, b, a));
+}
+
 void Renderer::EnableBlend() const
 {
 	/* Enable blending*/

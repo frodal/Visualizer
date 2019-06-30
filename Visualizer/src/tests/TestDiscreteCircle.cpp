@@ -32,10 +32,10 @@ namespace Test {
 	{
 		Renderer renderer;
 
-		renderer.SetClearColor(glm::vec4(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]));
+		renderer.SetClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
 		renderer.Clear();
 
-		float* positions = new float[((size_t)Ntriangles + 1) * 2];
+		float* positions = new float[(static_cast<size_t>(Ntriangles) + 1) * 2];
 
 		positions[0] = 0.0f;
 		positions[1] = 0.0f;
@@ -45,7 +45,7 @@ namespace Test {
 			positions[i*2 + 1] = glm::sin(-2 * glm::pi<float>() * (i - 1) / static_cast<float>(Ntriangles));
 		}
 
-		unsigned int* indices = new unsigned int[(size_t)Ntriangles * 3];
+		unsigned int* indices = new unsigned int[static_cast<size_t>(Ntriangles) * 3];
 
 		for (int i = 0; i < Ntriangles; i++)
 		{

@@ -35,6 +35,9 @@ void Window::SetVSync(bool enabled)
 
 double Window::GetDeltaTime()
 {
+	/* Gets the time since last call to this function. 
+	   This might be unwanted. 
+	   TODO: Do this in the OnUpdate call? */
 	double oldTime = timeLastGetDeltaTime;
 	timeLastGetDeltaTime = glfwGetTime();
 	return timeLastGetDeltaTime - oldTime;

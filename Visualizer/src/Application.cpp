@@ -48,7 +48,7 @@ int main(void)
 		/* Loop until the user closes the window */
 		while (!window.ShouldClose())
 		{
-			renderer.SetClearColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+			renderer.SetClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			renderer.Clear();
 
 			// Start the Dear ImGui frame
