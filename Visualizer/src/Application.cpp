@@ -1,9 +1,11 @@
 /*
-This is the main .cpp file for the Visulazier application using OpenGL to render stuff.
+This is the main .cpp file for the Visualizer application using OpenGL to render stuff.
 See the documentation of OpenGL, e.g., http://docs.gl/
 */
+/* Includes */
 #include "PreCompiledHeader.h"
 #include "Renderer.h"
+#include "Window.h"
 
 #include "tests/Test.h"
 #include "tests/TestClearColor.h"
@@ -11,61 +13,18 @@ See the documentation of OpenGL, e.g., http://docs.gl/
 #include "tests/TestDiscreteCircle.h"
 
 
-/* Initial window width and height */
-constexpr unsigned int WIDTH = 960;
-constexpr unsigned int HEIGHT = 540;
+/* Initial window title, width, height and Vsync setting */
+constexpr const char* TITLE = "Visualizer";
+constexpr unsigned int WIDTH = 1280;
+constexpr unsigned int HEIGHT = 720;
+constexpr bool VSYNC = true;
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-
+/* Entry Point*/
 int main(void)
 {
-	GLFWwindow* window;
-
-	/* Initialize the GLFW library */
-	if (!glfwInit())
+	/* Scope for certain variables */
 	{
-		std::cout << "Error: Could not set up the GLFW library!" << std::endl;
-		return -1;
-	}
-
-	/* Sets the version of OpenGL to use and sets the openGL profile*/
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(WIDTH, HEIGHT, "Visulazier", NULL, NULL);
-	if (!window)
-	{
-		std::cout << "Error: Could not set up a window with an openGL context!" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-
-	/* Make the window's context current */
-	glfwMakeContextCurrent(window);
-
-	/* Sets v-sync*/
-	glfwSwapInterval(1);
-
-	/* Set GLFW Callbacks*/
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-	/* Initialize the GLEW library (Needs a valid OpenGL rendering context)*/
-	GLenum message = glewInit();
-	if (message != GLEW_OK)
-	{
-		std::cout << "Error: Could not set up the GLEW library!" << std::endl;
-		std::cout << glewGetErrorString(message) << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-
-	/* Prints the current versions used to the console*/
-	std::cout << "Current GLFW version:   " << glfwGetVersionString() << std::endl;
-	std::cout << "Current GLEW version:   " << glewGetString(GLEW_VERSION) << std::endl;
-	std::cout << "Current OpenGL version: " << glGetString(GL_VERSION) << std::endl;
-	{
+		Window window({ TITLE, WIDTH, HEIGHT, VSYNC });
 		Renderer renderer;
 
 		// Setup Dear ImGui context
@@ -74,19 +33,20 @@ int main(void)
 		//ImGui::StyleColorsDark();
 		ImGui::StyleColorsLight();
 		// Setup Platform/Renderer bindings for ImGui
-		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui_ImplGlfw_InitForOpenGL(window.GetNativeWindow(), true);
 		ImGui_ImplOpenGL3_Init("#version 130");
 
+		/* Tests */
 		Test::Test* currentTest = nullptr;
 		Test::TestMenu* testMenu = new Test::TestMenu(currentTest);
 		currentTest = testMenu;
-
+		/* Registering tests */
 		testMenu->RegisterTest<Test::TestClearColor>("Clear color");
 		testMenu->RegisterTest<Test::TestTexture2D>("2D texture");
 		testMenu->RegisterTest<Test::TestDiscreteCircle>("Discrete circle");
 
 		/* Loop until the user closes the window */
-		while (!glfwWindowShouldClose(window))
+		while (!window.ShouldClose())
 		{
 			renderer.SetClearColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 			renderer.Clear();
@@ -98,7 +58,7 @@ int main(void)
 
 			if (currentTest)
 			{
-				currentTest->OnUpdate(0.0f);
+				currentTest->OnUpdate(window.GetDeltaTime());
 				currentTest->OnRender();
 				ImGui::Begin(currentTest->GetTestName().c_str());
 				currentTest->OnImGuiRender();
@@ -107,6 +67,10 @@ int main(void)
 					delete currentTest;
 					currentTest = testMenu;
 				}
+				else if (currentTest == testMenu && ImGui::Button("Quit")) 
+				{
+					window.Close();
+				}
 				ImGui::End();
 			}
 
@@ -114,31 +78,19 @@ int main(void)
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-			/* Swap front and back buffers */
-			glfwSwapBuffers(window);
-
-			/* Poll for and process events */
-			glfwPollEvents();
+			window.OnUpdate();
 		}
+		/* Free allocated memory*/
 		if (currentTest != testMenu)
 			delete testMenu;
 		delete currentTest;
+		
+		// Cleanup
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
 	}
 
-	// Cleanup
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
-
-	/* Closes and destroys the GLFW window*/
-	glfwDestroyWindow(window);
-
-	/* Terminates the GLFW context*/
-	glfwTerminate();
+	Window::TerminateWindow();
 	return 0;
-}
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
 }
