@@ -24,6 +24,11 @@ void Renderer::EnableBlend() const
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 }
 
+void Renderer::EnableDepth() const
+{
+	glEnable(GL_DEPTH_TEST);
+}
+
 void Renderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) const
 {
 	shader.Bind();
