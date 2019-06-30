@@ -33,6 +33,13 @@ void Window::SetVSync(bool enabled)
 	windowprops.Vsync = enabled;
 }
 
+double Window::GetDeltaTime()
+{
+	double oldTime = timeLastGetDeltaTime;
+	timeLastGetDeltaTime = glfwGetTime();
+	return timeLastGetDeltaTime - oldTime;
+}
+
 void Window::TerminateWindow()
 {
 	glfwTerminate();

@@ -28,8 +28,12 @@ public:
 	void SetVSync(bool enabled);
 	inline bool IsVSync() const { return windowprops.Vsync; }
 
+	inline double GetTime() const { return glfwGetTime(); }
+	double GetDeltaTime();
+
 	inline GLFWwindow* GetNativeWindow() const { return window; }
 	inline bool ShouldClose() const { return glfwWindowShouldClose(window); }
+	inline void Close() const { glfwSetWindowShouldClose(window, GLFW_TRUE); }
 
 	static void TerminateWindow();
 private:
@@ -38,4 +42,5 @@ private:
 private:
 	GLFWwindow* window;
 	WindowProps windowprops;
+	double timeLastGetDeltaTime = 0.0;
 };

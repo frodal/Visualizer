@@ -58,7 +58,7 @@ int main(void)
 
 			if (currentTest)
 			{
-				currentTest->OnUpdate(0.0f);
+				currentTest->OnUpdate(window.GetDeltaTime());
 				currentTest->OnRender();
 				ImGui::Begin(currentTest->GetTestName().c_str());
 				currentTest->OnImGuiRender();
@@ -66,6 +66,10 @@ int main(void)
 				{
 					delete currentTest;
 					currentTest = testMenu;
+				}
+				else if (currentTest == testMenu && ImGui::Button("Quit")) 
+				{
+					window.Close();
 				}
 				ImGui::End();
 			}
@@ -76,6 +80,7 @@ int main(void)
 
 			window.OnUpdate();
 		}
+		/* Free allocated memory*/
 		if (currentTest != testMenu)
 			delete testMenu;
 		delete currentTest;
