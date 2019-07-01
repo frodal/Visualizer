@@ -6,10 +6,10 @@
 namespace Test {
 
 	Test3DCube::Test3DCube(std::string& name)
-		: Test(name), projection(glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, -1000.0f, 1000.0f)),
-		view(glm::translate(glm::mat4(1.0f), glm::vec3(640, 360, 0.0f))),
+		: Test(name), projection(glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, 0.1f, 1000.0f)),
+		view(glm::translate(glm::mat4(1.0f), glm::vec3(640, 360, -500.0f))),
 		model(glm::mat4(1.0f)), size(100.0f), speed(1.0f),
-		cubeColor{ 0.0f, 0.0f, 1.0f, 0.5f },
+		cubeColor{ 0.0f, 0.0f, 1.0f, 1.0f },
 		backgroundColor{ 0.0f, 0.0f, 0.0f, 1.0f }
 	{
 		/* Vertex positions*/
@@ -78,12 +78,16 @@ namespace Test {
 
 		model = glm::scale(glm::mat4(1.0f), glm::vec3(size, size, size)); // Scales the model
 		model = glm::rotate(model, static_cast<float>(Window::GetTime()) * speed, glm::vec3(1.0f, 1.0f, 0.0f)); // rotates the model about the vector (1,1,0)
-		glm::mat4 MVP = projection * view * model;
 		shader->Bind();
-		shader->SetUniformMat4f("u_MVP", MVP);
+		shader->SetUniformMat4f("u_MVP", projection * view * model);
 		shader->SetUniform4f("u_Color", cubeColor[0], cubeColor[1], cubeColor[2], cubeColor[3]);
 
 		renderer.Draw(*vertexArray, *indexBuffer, *shader);
+		model = glm::scale(model, glm::vec3(1.005f, 1.005f, 1.005f)); // Scales the model
+		shader->SetUniformMat4f("u_MVP", projection * view * model);
+		shader->SetUniform4f("u_Color", 0.0f, 0.0f, 0.0f, 1.0f);
+
+		renderer.DrawWireFrame(*vertexArray, *indexBuffer, *shader);
 	}
 
 	void Test3DCube::OnImGuiRender()
