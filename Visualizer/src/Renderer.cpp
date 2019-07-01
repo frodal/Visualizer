@@ -27,6 +27,7 @@ void Renderer::EnableBlend() const
 void Renderer::EnableDepth() const
 {
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 }
 
 void Renderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) const
@@ -35,6 +36,20 @@ void Renderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuff
 
 	vertexArray.Bind();
 	indexBuffer.Bind();
+
+	GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
+
+	GLCall(glDrawElements(GL_TRIANGLES, indexBuffer.GetCount(), GL_UNSIGNED_INT, nullptr));
+}
+
+void Renderer::DrawWireFrame(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) const
+{
+	shader.Bind();
+
+	vertexArray.Bind();
+	indexBuffer.Bind();
+
+	GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 
 	GLCall(glDrawElements(GL_TRIANGLES, indexBuffer.GetCount(), GL_UNSIGNED_INT, nullptr));
 }
