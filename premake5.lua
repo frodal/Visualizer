@@ -38,7 +38,7 @@ project "Visualizer"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
-    staticruntime "off"
+    staticruntime "on"
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
@@ -110,7 +110,7 @@ project "GLFW"
     location "Visualizer"
     kind "StaticLib"
     language "C"
-    staticruntime "On"
+    staticruntime "on"
     
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
@@ -168,7 +168,7 @@ project "ImGui"
     kind "StaticLib"
     language "C++"
     cppdialect "C++17"
-    staticruntime "On"
+    staticruntime "on"
         
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin/int/" .. outputdir .. "/%{prj.name}")

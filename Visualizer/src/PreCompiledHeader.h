@@ -14,6 +14,7 @@
 #include <functional> // Standard functional library
 
 // OpenGL Math library, see https://glm.g-truc.net/0.9.9/index.html
+#define GLM_FORCE_MESSAGES
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 

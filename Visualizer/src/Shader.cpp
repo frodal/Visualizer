@@ -8,7 +8,7 @@ Shader::Shader(const std::string& _filepath)
 	ShaderProgramSource source = ParseShader(_filepath);
 	if (source.FragmentSource.empty() || source.VertexSource.empty())
 	{
-		std::cout << "Warning: Did not find shader source file '" << _filepath << "'" << std::endl;
+		std::cout << "Warning: Did not find a valid shader source file '" << _filepath << "'" << std::endl;
 		std::cout << "The default shader will be used!" << std::endl;
 		source = DefaultShaderSource();
 	}
@@ -87,10 +87,10 @@ ShaderProgramSource Shader::ParseShader(const std::string& _filepath)
 		}
 		else if (type != ShaderType::NONE)
 		{
-			ss[(int)type] << line << '\n';
+			ss[static_cast<int>(type)] << line << '\n';
 		}
 	}
-	return { ss[(int)ShaderType::VERTEX].str(), ss[(int)ShaderType::FRAGMENT].str() };
+	return { ss[static_cast<int>(ShaderType::VERTEX)].str(), ss[static_cast<int>(ShaderType::FRAGMENT)].str() };
 }
 
 ShaderProgramSource Shader::DefaultShaderSource()
@@ -134,7 +134,7 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 	{
 		int length;
 		GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
-		char* message = (char*)_malloca(length * sizeof(char));
+		char* message = static_cast<char*>(_malloca(length * sizeof(char)));
 		GLCall(glGetShaderInfoLog(id, length, &length, message));
 		std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
 		std::cout << message << std::endl;
@@ -163,7 +163,7 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
 	{
 		int length;
 		GLCall(glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length));
-		char* message = (char*)_malloca(length * sizeof(char));
+		char* message = static_cast<char*>(_malloca(length * sizeof(char)));
 		GLCall(glGetProgramInfoLog(program, length, &length, message));
 		std::cout << "Failed to link shader!" << std::endl;
 		std::cout << message << std::endl;
@@ -182,7 +182,7 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
 	{
 		int length;
 		GLCall(glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length));
-		char* message = (char*)_malloca(length * sizeof(char));
+		char* message = static_cast<char*>(_malloca(length * sizeof(char)));
 		GLCall(glGetProgramInfoLog(program, length, &length, message));
 		std::cout << "Failed to validate shader program!" << std::endl;
 		std::cout << message << std::endl;
