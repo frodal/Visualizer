@@ -15,11 +15,10 @@ A visualizer written in C++ using OpenGL
 To get a local copy up and running follow these simple steps.
 
 1. Clone the project with all its submodules (`git clone --recursive https://github.com/frodal/Visualizer.git`)
-2. Make sure you have [Microsoft Visual Studio](https://visualstudio.microsoft.com) installed with the visual C++ compiler
+2. Make sure you have [Microsoft Visual Studio 2019](https://visualstudio.microsoft.com) installed with the visual C++ compiler
 3. Run the `GenerateProjects.bat` file located in the root directory to generate the Visual Studio solution files with [Premake](https://github.com/premake/premake-core)
 4. Open up the generated `Visualizer.sln` file in Visual Studio
-5. If you are using Visual Studio 2019, you will need to retarget the solution, i.e., go to `Project->Retarget solution` and press `OK` (Premake does not yet support VS 2019)
-6. Build the solution (`Ctrl`+`Shift`+`B`) :sunglasses:
+5. Build the solution (`Ctrl`+`Shift`+`B`) :sunglasses:
 
 ### Dependencies
 
