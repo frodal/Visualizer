@@ -13,6 +13,7 @@ public:
 	void EnableBlend() const;
 	void EnableDepth() const;
 	void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) const;
+	void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, unsigned int indexCount) const;
 	void DrawWireFrame(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) const;
 };
 
