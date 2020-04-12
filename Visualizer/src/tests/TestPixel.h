@@ -9,8 +9,8 @@
 
 namespace Test {
 
-	struct Vertex {
-		float x, y, z;
+	struct Vertex2D {
+		float x, y;
 		float r, g, b;
 	};
 
@@ -24,9 +24,10 @@ namespace Test {
 		virtual void OnRender() override;
 		virtual void OnImGuiRender() override;
 	private:
-		unsigned int width, height, pixelSize;
+		unsigned int width, height, pixelSize, horizontalPixelCount, verticalPixelCount;
+		float speed, distance;
 		glm::mat4 projection, view;
-		Vertex* vertex;
+		Vertex2D* vertex;
 		unsigned int* indices;
 		std::unique_ptr<VertexArray> vertexArray;
 		std::unique_ptr<VertexBuffer> vertexBuffer;
