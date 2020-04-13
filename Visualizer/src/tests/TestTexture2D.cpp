@@ -36,7 +36,7 @@ namespace Test {
 
 		indexBuffer = std::make_unique<IndexBuffer>(indices, lengthof(indices));
 
-		shader = std::make_unique<Shader>("resources/shaders/Texture.shader");
+		shader = std::make_unique<Shader>("resources/shaders/Texture.glsl");
 		shader->Bind();
 		//shader->SetUniform4f("u_Color", 0.0f, 0.0f, 0.0f, 1.0f);
 		texture = std::make_unique<Texture>("resources/textures/Pyramids.png");
