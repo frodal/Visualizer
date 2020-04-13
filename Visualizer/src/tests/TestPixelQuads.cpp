@@ -1,5 +1,5 @@
 #include "PreCompiledHeader.h"
-#include "TestPixel.h"
+#include "TestPixelQuads.h"
 #include "Renderer.h"
 
 namespace Test {
@@ -8,7 +8,7 @@ namespace Test {
 		float r, g, b;
 	};
 
-	TestPixel::TestPixel(std::string& name)
+	TestPixelQuads::TestPixelQuads(std::string& name)
 		: Test(name), width(1280), height(720), pixelSize(32),
 		horizontalPixelCount(width / pixelSize), verticalPixelCount(height / pixelSize),
 		speed(250.0f), distance(0.0f),
@@ -49,13 +49,13 @@ namespace Test {
 		shader->SetUniformMat4f("u_MVP", projection * view);
 	}
 
-	TestPixel::~TestPixel()
+	TestPixelQuads::~TestPixelQuads()
 	{
 		delete[] vertex;
 		delete[] indices;
 	}
 
-	void TestPixel::OnUpdate(float deltaTime)
+	void TestPixelQuads::OnUpdate(float deltaTime)
 	{
 		distance += speed * deltaTime;
 
@@ -78,14 +78,14 @@ namespace Test {
 		vertexBuffer->SetData(vertex, verticalPixelCount * horizontalPixelCount * 4 * sizeof(Vertex2D));
 	}
 
-	void TestPixel::OnRender()
+	void TestPixelQuads::OnRender()
 	{
 		Renderer renderer;
 
 		renderer.Draw(*vertexArray, *indexBuffer, *shader, horizontalPixelCount * verticalPixelCount * 6);
 	}
 
-	void TestPixel::OnImGuiRender()
+	void TestPixelQuads::OnImGuiRender()
 	{
 		constexpr unsigned int minPS = 1;
 		constexpr unsigned int maxPS = 128;

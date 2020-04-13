@@ -14,11 +14,11 @@ namespace Test {
 		float r, g, b;
 	};
 
-	class TestPixel : public Test
+	class TestPixelQuads : public Test
 	{
 	public:
-		TestPixel(std::string& name);
-		virtual ~TestPixel();
+		TestPixelQuads(std::string& name);
+		virtual ~TestPixelQuads();
 
 		virtual void OnUpdate(float deltaTime) override;
 		virtual void OnRender() override;

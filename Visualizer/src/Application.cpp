@@ -12,7 +12,7 @@ See the documentation of OpenGL, e.g., http://docs.gl/
 #include "tests/TestTexture2D.h"
 #include "tests/TestDiscreteCircle.h"
 #include "tests/Test3DCube.h"
-#include "tests/TestPixel.h"
+#include "tests/TestPixelQuads.h"
 
 
 /* Initial window title, width, height and Vsync setting */
@@ -47,7 +47,7 @@ int main(void)
 		testMenu->RegisterTest<Test::TestTexture2D>("2D texture");
 		testMenu->RegisterTest<Test::TestDiscreteCircle>("Discrete circle");
 		testMenu->RegisterTest<Test::Test3DCube>("3D Cube");
-		testMenu->RegisterTest<Test::TestPixel>("Pixel Engine");
+		testMenu->RegisterTest<Test::TestPixelQuads>("Pixel Engine quads");
 
 		/* Loop until the user closes the window */
 		while (!window.ShouldClose())
