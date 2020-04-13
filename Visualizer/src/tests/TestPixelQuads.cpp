@@ -36,7 +36,7 @@ namespace Test {
 		renderer.EnableDepth();
 
 		vertexArray = std::make_unique<VertexArray>();
-		vertexBuffer = std::make_unique<VertexBuffer>(static_cast<size_t>(width) * static_cast<size_t>(height) * 4 * sizeof(Vertex2D));
+		vertexBuffer = std::make_unique<VertexBuffer>(width * height * 4 * static_cast<unsigned int>(sizeof(Vertex2D)));
 		VertexBufferLayout bufferLayout;
 		bufferLayout.Push<float>(2);
 		bufferLayout.Push<float>(3);
