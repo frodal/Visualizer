@@ -51,7 +51,7 @@ namespace Test {
 		renderer.EnableDepth();
 
 		vertexArray = std::make_unique<VertexArray>();
-		vertexBuffer = std::make_unique<VertexBuffer>(positions, lengthof(positions) * sizeof(float));
+		vertexBuffer = std::make_unique<VertexBuffer>(positions, sizeof(positions));
 		VertexBufferLayout bufferLayout;
 		bufferLayout.Push<float>(3);
 		vertexArray->AddBuffer(*vertexBuffer, bufferLayout);

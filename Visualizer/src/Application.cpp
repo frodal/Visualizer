@@ -64,7 +64,7 @@ int main(void)
 
 			if (currentTest)
 			{
-				currentTest->OnUpdate(window.GetDeltaTime());
+				currentTest->OnUpdate(static_cast<float>(window.GetDeltaTime()));
 				currentTest->OnRender();
 				ImGui::Begin(currentTest->GetTestName().c_str());
 				currentTest->OnImGuiRender();
