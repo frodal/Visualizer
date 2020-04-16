@@ -18,7 +18,7 @@ namespace Test {
 		Renderer renderer;
 		renderer.EnableBlend();
 
-		shader = std::make_unique<Shader>("resources/shaders/ClearColor.shader");
+		shader = std::make_unique<Shader>("resources/shaders/ClearColor.glsl");
 		shader->Bind();
 		shader->SetUniform4f("u_Color", circleColor[0], circleColor[1], circleColor[2], circleColor[3]);
 	}
