@@ -1,38 +1,40 @@
 #pragma once
+#include "PreCompiledHeader.h"
 #include "Test.h"
 
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 #include "VertexArray.h"
+#include "Texture.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
 
 namespace Test {
 
-	struct Vertex2D {
-		float x, y;
-		float r, g, b;
+	struct Pixel {
+		uint8_t r, g, b, a;
 	};
 
-	class TestPixel : public Test
+	class TestPixelTexture : public Test
 	{
 	public:
-		TestPixel(std::string& name);
-		virtual ~TestPixel();
+		TestPixelTexture(std::string& name);
+		virtual ~TestPixelTexture();
 
 		virtual void OnUpdate(float deltaTime) override;
 		virtual void OnRender() override;
 		virtual void OnImGuiRender() override;
 	private:
-		unsigned int width, height, pixelSize, horizontalPixelCount, verticalPixelCount;
-		float speed, distance;
-		glm::mat4 projection, view;
-		Vertex2D* vertex;
-		unsigned int* indices;
 		std::unique_ptr<VertexArray> vertexArray;
 		std::unique_ptr<VertexBuffer> vertexBuffer;
 		std::unique_ptr<IndexBuffer> indexBuffer;
 		std::unique_ptr<Shader> shader;
+		std::unique_ptr<Texture> texture;
+		Pixel* pixels;
+		unsigned int width, height, pixelSize;
+		float speed, distance;
+		unsigned int textureSlot;
+		glm::mat4 projection, view;
 	};
 
 }
