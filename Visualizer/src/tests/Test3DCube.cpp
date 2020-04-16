@@ -58,7 +58,7 @@ namespace Test {
 
 		indexBuffer = std::make_unique<IndexBuffer>(indices, lengthof(indices));
 
-		shader = std::make_unique<Shader>("resources/shaders/ClearColor.shader");
+		shader = std::make_unique<Shader>("resources/shaders/ClearColor.glsl");
 	}
 
 	Test3DCube::~Test3DCube()
