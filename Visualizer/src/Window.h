@@ -24,6 +24,7 @@ public:
 
 	inline unsigned int GetWidth() const { return windowprops.Width; }
 	inline unsigned int GetHeight() const { return windowprops.Height; }
+	inline int GetKey(int key) const { return glfwGetKey(window, key); }
 
 	void SetVSync(bool enabled);
 	inline bool IsVSync() const { return windowprops.Vsync; }
