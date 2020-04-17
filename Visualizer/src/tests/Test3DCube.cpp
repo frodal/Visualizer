@@ -9,8 +9,8 @@ namespace Test {
 		: Test(name), projection(glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, 0.1f, 1000.0f)),
 		view(glm::translate(glm::mat4(1.0f), glm::vec3(640, 360, -500.0f))),
 		model(glm::mat4(1.0f)), size(100.0f), speed(1.0f),
-		cubeColor{ 0.0f, 0.0f, 1.0f, 1.0f },
-		backgroundColor{ 0.0f, 0.0f, 0.0f, 1.0f }
+		cubeColor{ 0.2f, 0.2f, 0.2f, 1.0f },
+		backgroundColor{ 0.7f, 0.7f, 0.7f, 1.0f }
 	{
 		/* Vertex positions*/
 		float positions[] = {
@@ -94,7 +94,7 @@ namespace Test {
 	{
 		ImGui::SliderFloat("Cube size", &size, 0.0f, 200.0f);
 		ImGui::SliderFloat("Rotation speed", &speed, 0.0f, 10.0f);
-		ImGui::ColorEdit4("Circle color", cubeColor);
+		ImGui::ColorEdit4("Cube color", cubeColor);
 		ImGui::ColorEdit4("Background color", backgroundColor);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	}

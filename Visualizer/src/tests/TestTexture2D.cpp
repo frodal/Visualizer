@@ -54,7 +54,7 @@ namespace Test {
 	void TestTexture2D::OnRender()
 	{
 		Renderer renderer;
-		renderer.SetClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		renderer.SetClearColor(0.7f, 0.7f, 0.7f, 1.0f);
 		renderer.Clear();
 
 		texture->Bind(textureSlot);

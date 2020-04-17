@@ -13,7 +13,7 @@ namespace Test {
 		: Test(name), projection(glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f)),
 		view(glm::translate(glm::mat4(1.0f), glm::vec3(640, 360, 0))),
 		model(glm::mat4(1.0f)),Ntriangles(6),radius(200),
-		circleColor{ 0.0f, 0.0f, 1.0f, 1.0f }, backgroundColor{ 0.0f, 0.0f, 0.0f, 1.0f }
+		circleColor{ 0.2f, 0.2f, 0.2f, 1.0f }, backgroundColor{ 0.7f, 0.7f, 0.7f, 1.0f }
 	{
 		Renderer renderer;
 		renderer.EnableBlend();
