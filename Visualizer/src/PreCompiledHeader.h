@@ -29,10 +29,15 @@ template<typename T, std::size_t N>
 constexpr std::size_t lengthof(T(&)[N]) { return N; }
 
 // Defines some error checking macros to be used with OpenGL
+#ifdef DEBUG
 #define ASSERT(x) if (!(x)) __debugbreak();
 #define GLCall(x) GLClearError();\
 	x;\
 	ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+#else
+#define ASSERT(x)
+#define GLCall(x) x
+#endif
 
 void GLClearError();
 bool GLLogCall(const char* function, const char* file, int line);
