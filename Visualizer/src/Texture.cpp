@@ -55,13 +55,13 @@ void Texture::UpdateTexture(unsigned char* buffer, int Width, int Height)
 	GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 }
 
-void Texture::Setup(unsigned char* buffer, int Width, int Height, GLint sampling)
+void Texture::Setup(unsigned char* buffer, int Width, int Height, GLint filtering)
 {
 	GLCall(glGenTextures(1, &rendererID));
 	GLCall(glBindTexture(GL_TEXTURE_2D, rendererID));
 
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, sampling));
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, sampling));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filtering));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filtering));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 
