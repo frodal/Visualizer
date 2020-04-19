@@ -26,10 +26,11 @@ namespace Test {
 		};
 		struct MatrixLetter
 		{
-			glm::vec2 position;
-			Pixel primaryColor;
-			Pixel secondaryColor;
-			float length;
+			glm::vec2 position = { 0.0f, -10000.0f };
+			Pixel primaryColor = { 255, 255, 255, 255 };
+			Pixel secondaryColor = { 0, 255, 0, 255 };
+			float length = 10.0f;
+			float speed = 10.0f;
 		};
 	private:
 		std::unique_ptr<VertexArray> vertexArray;
@@ -38,9 +39,10 @@ namespace Test {
 		std::unique_ptr<Shader> shader;
 		std::unique_ptr<Texture> texture;
 		Pixel* pixels;
-		std::list<MatrixLetter> letters;
+		std::array<MatrixLetter,2000> letters;
+		unsigned int nextLetter;
 		unsigned int width, height, pixelSize, horizontalPixelCount, verticalPixelCount;
-		float speed;
+		float speed, timeLastSpawn, updateTime, primaryColor[4], secondaryColor[4];
 		unsigned int textureSlot;
 		glm::mat4 projection, view;
 	};

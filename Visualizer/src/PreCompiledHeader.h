@@ -10,6 +10,7 @@
 #include <string> // Standard string library
 #include <sstream> // Standard String stream library
 #include <vector> // Standard vector library
+#include <array> // Standard array library
 #include <unordered_map> // Standard unordered map library
 #include <functional> // Standard functional library
 
