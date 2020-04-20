@@ -39,7 +39,7 @@ namespace Test {
 		std::unique_ptr<Shader> shader;
 		std::unique_ptr<Texture> texture;
 		Pixel* pixels;
-		std::array<MatrixLetter,2000> letters;
+		std::array<MatrixLetter,10000> letters;
 		unsigned int nextLetter;
 		unsigned int width, height, pixelSize, horizontalPixelCount, verticalPixelCount;
 		float speed, timeLastSpawn, updateTime, primaryColor[4], secondaryColor[4];

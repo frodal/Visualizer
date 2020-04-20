@@ -71,33 +71,25 @@ namespace Test {
 			unsigned int x = static_cast<unsigned int>(letter.position.x);
 
 			// Updating screen pixels
-			if (startHeight < static_cast<int>(verticalPixelCount) && endHeight >= 0)
+			for (unsigned int i = 0; i < length; i++)
 			{
-				if (startHeight >= 0)
+				int y = startHeight + i;
+				if (y < verticalPixelCount && y >= 0)
 				{
-					pixels[x + startHeight * horizontalPixelCount] = letter.primaryColor;
-				}
-				for (unsigned int i = 1; i < length+1; i++)
-				{
-					int y = startHeight + i;
-					if (y < verticalPixelCount && y >= 0)
-					{
-						Pixel oldPixelData = pixels[x + y * horizontalPixelCount];
-						Pixel newPixelData = letter.secondaryColor;
-						float newPixelAlpha = 255.0f * (1.0f - static_cast<float>(i) / length);
-						newPixelData.a = static_cast<unsigned char>(newPixelAlpha);
-						float alpha = 255.0f * (1.0f - (1.0f - newPixelAlpha / 255.0f) * (1.0f - static_cast<float>(oldPixelData.a) / 255.0f));
-						pixels[x + y * horizontalPixelCount].r = static_cast<unsigned char>(static_cast<float>(newPixelData.r) * newPixelAlpha / alpha + static_cast<float>(oldPixelData.r) * (1.0f - newPixelAlpha / alpha));
-						pixels[x + y * horizontalPixelCount].g = static_cast<unsigned char>(static_cast<float>(newPixelData.g) * newPixelAlpha / alpha + static_cast<float>(oldPixelData.g) * (1.0f - newPixelAlpha / alpha));
-						pixels[x + y * horizontalPixelCount].b = static_cast<unsigned char>(static_cast<float>(newPixelData.b) * newPixelAlpha / alpha + static_cast<float>(oldPixelData.b) * (1.0f - newPixelAlpha / alpha));
-						pixels[x + y * horizontalPixelCount].a = static_cast<unsigned char>(alpha);
-					}
+					unsigned int pos = x + y * horizontalPixelCount;
+					Pixel oldPixelData = pixels[pos];
+					Pixel newPixelData = i == 0 ? letter.primaryColor : letter.secondaryColor;
+					float newPixelAlpha = static_cast<float>(newPixelData.a) * (1.0f - static_cast<float>(i) / length);
+					float alpha = 255.0f * (1.0f - (1.0f - newPixelAlpha / 255.0f) * (1.0f - static_cast<float>(oldPixelData.a) / 255.0f));
+					pixels[pos].r = static_cast<unsigned char>(static_cast<float>(newPixelData.r) * newPixelAlpha / alpha + static_cast<float>(oldPixelData.r) * (1.0f - newPixelAlpha / alpha));
+					pixels[pos].g = static_cast<unsigned char>(static_cast<float>(newPixelData.g) * newPixelAlpha / alpha + static_cast<float>(oldPixelData.g) * (1.0f - newPixelAlpha / alpha));
+					pixels[pos].b = static_cast<unsigned char>(static_cast<float>(newPixelData.b) * newPixelAlpha / alpha + static_cast<float>(oldPixelData.b) * (1.0f - newPixelAlpha / alpha));
+					pixels[pos].a = static_cast<unsigned char>(alpha);
 				}
 			}
 
 			// Update letter position
-			if(endHeight>=0)
-				letter.position.y -= letter.speed * deltaTime;
+			letter.position.y -= letter.speed * deltaTime;
 		}
 
 		// Spawning letters
@@ -117,6 +109,7 @@ namespace Test {
 			updateTime = time;
 		}
 
+		// Upload pixels to the GPU
 		texture->UpdateTexture(reinterpret_cast<unsigned char*>(pixels), horizontalPixelCount, verticalPixelCount);
 	}
 
