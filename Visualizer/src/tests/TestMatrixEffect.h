@@ -42,7 +42,7 @@ namespace Test {
 		std::array<MatrixLetter,10000> letters;
 		unsigned int nextLetter;
 		unsigned int width, height, pixelSize, horizontalPixelCount, verticalPixelCount;
-		float speed, timeLastSpawn, updateTime, primaryColor[4], secondaryColor[4];
+		float minSpeed, maxSpeed, minLength, maxLength, timeLastSpawn, updateTime, primaryColor[4], secondaryColor[4];
 		unsigned int textureSlot;
 		glm::mat4 projection, view;
 	};

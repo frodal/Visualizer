@@ -8,7 +8,9 @@ namespace Test {
 	TestMatrixEffect::TestMatrixEffect(std::string& name)
 		: Test(name), nextLetter(0), width(1280), height(720), pixelSize(8),
 		horizontalPixelCount(width / pixelSize), verticalPixelCount(height / pixelSize),
-		speed(5.0f), timeLastSpawn(0), updateTime(0), primaryColor{ 1.0f, 1.0f, 1.0f, 1.0f }, secondaryColor{ 0.0f, 1.0f, 0.0f, 1.0f },
+		minSpeed(5.0f), maxSpeed(25.0f), minLength(10.0f), maxLength(30.0f),
+		timeLastSpawn(0), updateTime(0),
+		primaryColor{ 1.0f, 1.0f, 1.0f, 1.0f }, secondaryColor{ 0.0f, 1.0f, 0.0f, 1.0f },
 		textureSlot(0), projection(glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height))),
 		view(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0)))
 	{
@@ -101,8 +103,8 @@ namespace Test {
 				letters[nextLetter].position = { rand() % horizontalPixelCount, verticalPixelCount };
 				letters[nextLetter].primaryColor = { static_cast<unsigned char>(255.0f * primaryColor[0]), static_cast<unsigned char>(255.0f * primaryColor[1]) , static_cast<unsigned char>(255.0f * primaryColor[2]), static_cast<unsigned char>(255.0f * primaryColor[3]) };
 				letters[nextLetter].secondaryColor = { static_cast<unsigned char>(255.0f * secondaryColor[0]), static_cast<unsigned char>(255.0f * secondaryColor[1]) , static_cast<unsigned char>(255.0f * secondaryColor[2]), static_cast<unsigned char>(255.0f * secondaryColor[3]) };
-				letters[nextLetter].length = rand() % 20 + 10;
-				letters[nextLetter].speed = rand() % 20 + speed;
+				letters[nextLetter].length = rand() % static_cast<int>(maxLength - minLength + 1.0f) + minLength;
+				letters[nextLetter].speed = rand() % static_cast<int>(maxSpeed - minSpeed + 1.0f) + minSpeed;
 				nextLetter = (static_cast<size_t>(nextLetter) + 1) % letters.max_size();
 				timeLastSpawn = time;
 			}
@@ -124,7 +126,12 @@ namespace Test {
 
 	void TestMatrixEffect::OnImGuiRender()
 	{
-		ImGui::SliderFloat("Minimum speed", &speed, 0.0f, 20.0f);
+		ImGui::SliderFloat("Minimum speed", &minSpeed, 0.0f, 20.0f);
+		ImGui::SliderFloat("Maximum speed", &maxSpeed, minSpeed, 50.0f);
+		maxSpeed = maxSpeed - minSpeed < 0.0f ? minSpeed : maxSpeed;
+		ImGui::SliderFloat("Minimum length", &minLength, 0.0f, 20.0f);
+		ImGui::SliderFloat("Maximum length", &maxLength, minLength, 50.0f);
+		maxLength = maxLength - minLength < 0.0f ? minLength : maxLength;
 		ImGui::ColorEdit4("Primary color", primaryColor);
 		ImGui::ColorEdit4("Trail color", secondaryColor);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
