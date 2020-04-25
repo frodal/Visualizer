@@ -65,7 +65,7 @@ namespace Test {
 		for (auto& letter : letters)
 		{
 			// Casting to integers
-			int startHeight = static_cast<int>(round(letter.position.y));
+			int startHeight = static_cast<int>(letter.position.y + 0.5f);
 			unsigned int length = static_cast<unsigned int>(letter.length);
 			int endHeight = startHeight + length;
 			if (endHeight < 0)
