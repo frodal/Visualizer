@@ -14,6 +14,7 @@ See the documentation of OpenGL, e.g., http://docs.gl/
 #include "tests/Test3DCube.h"
 #include "tests/TestPixelQuads.h"
 #include "tests/TestPixelTexture.h"
+#include "tests/TestMatrixEffect.h"
 
 
 /* Initial window title, width, height and Vsync setting */
@@ -50,6 +51,7 @@ int main(void)
 		testMenu->RegisterTest<Test::Test3DCube>("3D Cube");
 		testMenu->RegisterTest<Test::TestPixelQuads>("Pixel Engine quads");
 		testMenu->RegisterTest<Test::TestPixelTexture>("Pixel Engine texture");
+		testMenu->RegisterTest<Test::TestMatrixEffect>("The Matrix pixel effect");
 
 		/* Loop until the user closes the window */
 		while (!window.ShouldClose())
