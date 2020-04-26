@@ -55,6 +55,25 @@ namespace Test {
 		delete[] indices;
 	}
 
+	void CreateVertexData(Vertex2D* vertex, unsigned int width, unsigned int height, unsigned int pixelSize, unsigned int verticalPixelCount, unsigned int horizontalPixelCount, float distance, int threadID, int numberOfThreads)
+	{
+		unsigned int startY = threadID * verticalPixelCount / numberOfThreads;
+		unsigned int endY = (threadID + 1) * verticalPixelCount / numberOfThreads;
+
+		for (unsigned int y = startY; y < endY; y++)
+		{
+			for (unsigned int x = 0; x < horizontalPixelCount; x++)
+			{
+				unsigned int pos = 4 * (x + y * horizontalPixelCount);
+				Color color = { StandingWave((static_cast<float>(x * pixelSize) + distance) / width), static_cast<float>(y * pixelSize) / height, 0.0f };
+				vertex[pos + 0] = { static_cast<float>(x * pixelSize)      , static_cast<float>(y * pixelSize)      , color.r, color.g, color.b };
+				vertex[pos + 1] = { static_cast<float>((x + 1) * pixelSize), static_cast<float>(y * pixelSize)      , color.r, color.g, color.b };
+				vertex[pos + 2] = { static_cast<float>((x + 1) * pixelSize), static_cast<float>((y + 1) * pixelSize), color.r, color.g, color.b };
+				vertex[pos + 3] = { static_cast<float>(x * pixelSize)      , static_cast<float>((y + 1) * pixelSize), color.r, color.g, color.b };
+			}
+		}
+	}
+
 	void TestPixelQuads::OnUpdate(float deltaTime)
 	{
 		distance += speed * deltaTime;
@@ -62,19 +81,18 @@ namespace Test {
 		horizontalPixelCount = width / pixelSize;
 		verticalPixelCount = height / pixelSize;
 
-		unsigned int offset = 0;
-		for (unsigned int y = 0; y < verticalPixelCount; y++)
+		for (int i = 1; i < numberOfThreads; i++)
 		{
-			for (unsigned int x = 0; x < horizontalPixelCount; x++)
-			{
-				Color color = { StandingWave((static_cast<float>(x * pixelSize) + distance) / width), static_cast<float>(y * pixelSize) / height, 0.0f };
-				vertex[offset + 0] = { static_cast<float>(x * pixelSize)      , static_cast<float>(y * pixelSize)      , color.r, color.g, color.b };
-				vertex[offset + 1] = { static_cast<float>((x + 1) * pixelSize), static_cast<float>(y * pixelSize)      , color.r, color.g, color.b };
-				vertex[offset + 2] = { static_cast<float>((x + 1) * pixelSize), static_cast<float>((y + 1) * pixelSize), color.r, color.g, color.b };
-				vertex[offset + 3] = { static_cast<float>(x * pixelSize)      , static_cast<float>((y + 1) * pixelSize), color.r, color.g, color.b };
-				offset += 4;
-			}
+			threads[i-1] = std::thread(CreateVertexData, vertex, width, height, pixelSize, verticalPixelCount, horizontalPixelCount, distance, i, numberOfThreads);
 		}
+
+		CreateVertexData(vertex, width, height, pixelSize, verticalPixelCount, horizontalPixelCount, distance, 0, numberOfThreads);
+
+		for (int i = 1; i < numberOfThreads; i++)
+		{
+			threads[i-1].join();
+		}
+		
 		vertexBuffer->SetData(vertex, verticalPixelCount * horizontalPixelCount * 4 * sizeof(Vertex2D));
 	}
 
