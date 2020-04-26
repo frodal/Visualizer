@@ -63,7 +63,7 @@ namespace Test {
 		{
 			for (unsigned int x = 0; x < horizontalPixelCount; x++)
 			{
-				pixels[x + y * horizontalPixelCount] = { static_cast<uint8_t>(255 * abs(sin(3.141592f * static_cast<float>((x * pixelSize + static_cast<unsigned int>(distance))) / width))), static_cast<uint8_t>(255 * y * pixelSize / height), 0, 255 };
+				pixels[x + y * horizontalPixelCount] = { static_cast<uint8_t>(255 * StandingWave((static_cast<float>(x * pixelSize) + distance) / width)), static_cast<uint8_t>(255 * y * pixelSize / height), 0, 255 };
 			}
 		}
 

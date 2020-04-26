@@ -2,6 +2,7 @@
 #include "TestMatrixEffect.h"
 
 #include "Renderer.h"
+#include "Window.h"
 
 namespace Test {
 
@@ -95,7 +96,7 @@ namespace Test {
 		}
 
 		// Spawning letters
-		float time = glfwGetTime();
+		float time = Window::GetTime();
 		if (time > updateTime + 1.0f / 60.0f)
 		{
 			if (time > timeLastSpawn + (rand() % 5))

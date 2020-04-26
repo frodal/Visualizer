@@ -67,7 +67,7 @@ namespace Test {
 		{
 			for (unsigned int x = 0; x < horizontalPixelCount; x++)
 			{
-				Color color = { abs(sin(3.141592f * static_cast<float>((x * pixelSize + static_cast<unsigned int>(distance))) / width)), static_cast<float>(y * pixelSize) / height, 0.0f };
+				Color color = { StandingWave((static_cast<float>(x * pixelSize) + distance) / width), static_cast<float>(y * pixelSize) / height, 0.0f };
 				vertex[offset + 0] = { static_cast<float>(x * pixelSize)      , static_cast<float>(y * pixelSize)      , color.r, color.g, color.b };
 				vertex[offset + 1] = { static_cast<float>((x + 1) * pixelSize), static_cast<float>(y * pixelSize)      , color.r, color.g, color.b };
 				vertex[offset + 2] = { static_cast<float>((x + 1) * pixelSize), static_cast<float>((y + 1) * pixelSize), color.r, color.g, color.b };

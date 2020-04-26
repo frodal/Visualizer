@@ -43,4 +43,5 @@ constexpr std::size_t lengthof(T(&)[N]) { return N; }
 void GLClearError();
 bool GLLogCall(const char* function, const char* file, int line);
 
-
+// A standing wave function (unit wave with wave length and height = 1, approximation of abs(sin(pi * value)))
+float StandingWave(float value);
