@@ -52,6 +52,20 @@ namespace Test {
 		delete[] pixels;
 	}
 
+	void CreatePixelData(Pixel* pixels, unsigned int width, unsigned int height, unsigned int pixelSize, unsigned int verticalPixelCount, unsigned int horizontalPixelCount, float distance, int threadID, int numberOfThreads)
+	{
+		unsigned int startY = threadID * verticalPixelCount / numberOfThreads;
+		unsigned int endY = (threadID + 1) * verticalPixelCount / numberOfThreads;
+
+		for (unsigned int y = startY; y < endY; y++)
+		{
+			for (unsigned int x = 0; x < horizontalPixelCount; x++)
+			{
+				pixels[x + y * horizontalPixelCount] = { static_cast<uint8_t>(255 * StandingWave((static_cast<float>(x * pixelSize) + distance) / width)), static_cast<uint8_t>(255 * y * pixelSize / height), 0, 255 };
+			}
+		}
+	}
+
 	void TestPixelTexture::OnUpdate(float deltaTime)
 	{
 		distance += speed * deltaTime;
@@ -59,12 +73,16 @@ namespace Test {
 		unsigned int verticalPixelCount = height / pixelSize;
 		unsigned int horizontalPixelCount = width / pixelSize;
 
-		for (unsigned int y = 0; y < verticalPixelCount; y++)
+		for (int i = 1; i < numberOfThreads; i++)
 		{
-			for (unsigned int x = 0; x < horizontalPixelCount; x++)
-			{
-				pixels[x + y * horizontalPixelCount] = { static_cast<uint8_t>(255 * StandingWave((static_cast<float>(x * pixelSize) + distance) / width)), static_cast<uint8_t>(255 * y * pixelSize / height), 0, 255 };
-			}
+			threads[i - 1] = std::thread(CreatePixelData, pixels, width, height, pixelSize, verticalPixelCount, horizontalPixelCount, distance, i, numberOfThreads);
+		}
+
+		CreatePixelData(pixels, width, height, pixelSize, verticalPixelCount, horizontalPixelCount, distance, 0, numberOfThreads);
+
+		for (int i = 1; i < numberOfThreads; i++)
+		{
+			threads[i - 1].join();
 		}
 
 		texture->UpdateTexture(reinterpret_cast<unsigned char*>(pixels), horizontalPixelCount, verticalPixelCount);
