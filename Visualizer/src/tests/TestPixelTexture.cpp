@@ -70,7 +70,8 @@ namespace Test {
 	{
 		for (int i = 0; i < numberOfThreads; i++)
 		{
-			threads[i].join();
+			if (threads[i].joinable())
+				threads[i].join();
 		}
 
 		delete[] pixels;
