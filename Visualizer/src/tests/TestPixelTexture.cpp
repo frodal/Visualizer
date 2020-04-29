@@ -43,7 +43,7 @@ namespace Test {
 
 		for (int i = 0; i < numberOfThreads; i++)
 		{
-			threads[i] = std::thread(CreatePixelData, pixels, width, height, pixelSize, verticalPixelCount, horizontalPixelCount, distance, i, numberOfThreads);
+			threads[i] = std::async(std::launch::async, CreatePixelData, pixels, width, height, pixelSize, verticalPixelCount, horizontalPixelCount, distance, i, numberOfThreads);
 		}
 
 		Renderer renderer;
@@ -70,8 +70,8 @@ namespace Test {
 	{
 		for (int i = 0; i < numberOfThreads; i++)
 		{
-			if (threads[i].joinable())
-				threads[i].join();
+			if (threads[i].valid())
+				threads[i].wait();
 		}
 
 		delete[] pixels;
@@ -83,7 +83,7 @@ namespace Test {
 
 		for (int i = 0; i < numberOfThreads; i++)
 		{
-			threads[i].join();
+			threads[i].wait();
 		}
 
 		texture->UpdateTexture(reinterpret_cast<unsigned char*>(pixels), horizontalPixelCount, verticalPixelCount);
@@ -93,7 +93,7 @@ namespace Test {
 
 		for (int i = 0; i < numberOfThreads; i++)
 		{
-			threads[i] = std::thread(CreatePixelData, pixels, width, height, pixelSize, verticalPixelCount, horizontalPixelCount, distance, i, numberOfThreads);
+			threads[i] = std::async(std::launch::async, CreatePixelData, pixels, width, height, pixelSize, verticalPixelCount, horizontalPixelCount, distance, i, numberOfThreads);
 		}
 	}
 

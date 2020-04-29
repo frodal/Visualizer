@@ -36,7 +36,7 @@ namespace Test {
 		unsigned int textureSlot;
 		glm::mat4 projection, view;
 		static const int numberOfThreads = 2;
-		std::thread threads[numberOfThreads];
+		std::future<void> threads[numberOfThreads];
 	};
 
 }

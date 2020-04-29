@@ -52,7 +52,7 @@ namespace Test {
 
 		for (int i = 0; i < numberOfThreads; i++)
 		{
-			threads[i] = std::thread(CreateVertexData, vertex, width, height, pixelSize, verticalPixelCount, horizontalPixelCount, distance, i, numberOfThreads);
+			threads[i] = std::async(std::launch::async, CreateVertexData, vertex, width, height, pixelSize, verticalPixelCount, horizontalPixelCount, distance, i, numberOfThreads);
 		}
 
 		Renderer renderer;
@@ -77,8 +77,8 @@ namespace Test {
 	{
 		for (int i = 0; i < numberOfThreads; i++)
 		{
-			if(threads[i].joinable())
-				threads[i].join();
+			if(threads[i].valid())
+				threads[i].wait();
 		}
 		delete[] vertex;
 		delete[] indices;
@@ -90,7 +90,7 @@ namespace Test {
 
 		for (int i = 0; i < numberOfThreads; i++)
 		{
-			threads[i].join();
+			threads[i].wait();
 		}
 		
 		vertexBuffer->SetData(vertex, verticalPixelCount * horizontalPixelCount * 4 * sizeof(Vertex2D));
@@ -100,7 +100,7 @@ namespace Test {
 
 		for (int i = 0; i < numberOfThreads; i++)
 		{
-			threads[i] = std::thread(CreateVertexData, vertex, width, height, pixelSize, verticalPixelCount, horizontalPixelCount, distance, i, numberOfThreads);
+			threads[i] = std::async(std::launch::async, CreateVertexData, vertex, width, height, pixelSize, verticalPixelCount, horizontalPixelCount, distance, i, numberOfThreads);
 		}
 	}
 
