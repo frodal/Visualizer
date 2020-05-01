@@ -8,7 +8,7 @@
 
 A visualizer written in C++ using OpenGL
 
-![Test](Test.gif "A Visualizer Test")
+![Test](Test.png "A Visualizer Test")
 
 ## Getting Started
 
