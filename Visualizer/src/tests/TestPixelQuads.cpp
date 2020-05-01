@@ -8,6 +8,25 @@ namespace Test {
 		float r, g, b;
 	};
 
+	void CreateVertexData(Vertex2D* vertex, unsigned int width, unsigned int height, unsigned int pixelSize, unsigned int verticalPixelCount, unsigned int horizontalPixelCount, float distance, int threadID, int numberOfThreads)
+	{
+		unsigned int startY = threadID * verticalPixelCount / numberOfThreads;
+		unsigned int endY = (threadID + 1) * verticalPixelCount / numberOfThreads;
+
+		for (unsigned int y = startY; y < endY; y++)
+		{
+			for (unsigned int x = 0; x < horizontalPixelCount; x++)
+			{
+				unsigned int pos = 4 * (x + y * horizontalPixelCount);
+				Color color = { StandingWave((static_cast<float>(x * pixelSize) + distance) / width), static_cast<float>(y * pixelSize) / height, 0.0f };
+				vertex[pos + 0] = { static_cast<float>(x * pixelSize)      , static_cast<float>(y * pixelSize)      , color.r, color.g, color.b };
+				vertex[pos + 1] = { static_cast<float>((x + 1) * pixelSize), static_cast<float>(y * pixelSize)      , color.r, color.g, color.b };
+				vertex[pos + 2] = { static_cast<float>((x + 1) * pixelSize), static_cast<float>((y + 1) * pixelSize), color.r, color.g, color.b };
+				vertex[pos + 3] = { static_cast<float>(x * pixelSize)      , static_cast<float>((y + 1) * pixelSize), color.r, color.g, color.b };
+			}
+		}
+	}
+
 	TestPixelQuads::TestPixelQuads(std::string& name)
 		: Test(name), width(1280), height(720), pixelSize(32),
 		horizontalPixelCount(width / pixelSize), verticalPixelCount(height / pixelSize),
@@ -31,6 +50,11 @@ namespace Test {
 			}
 		}
 
+		for (int i = 0; i < numberOfThreads; i++)
+		{
+			threads[i] = std::async(std::launch::async, CreateVertexData, vertex, width, height, pixelSize, verticalPixelCount, horizontalPixelCount, distance, i, numberOfThreads);
+		}
+
 		Renderer renderer;
 		renderer.EnableBlend();
 		renderer.EnableDepth();
@@ -51,6 +75,11 @@ namespace Test {
 
 	TestPixelQuads::~TestPixelQuads()
 	{
+		for (int i = 0; i < numberOfThreads; i++)
+		{
+			if(threads[i].valid())
+				threads[i].wait();
+		}
 		delete[] vertex;
 		delete[] indices;
 	}
@@ -59,23 +88,20 @@ namespace Test {
 	{
 		distance += speed * deltaTime;
 
+		for (int i = 0; i < numberOfThreads; i++)
+		{
+			threads[i].wait();
+		}
+		
+		vertexBuffer->SetData(vertex, verticalPixelCount * horizontalPixelCount * 4 * sizeof(Vertex2D));
+
 		horizontalPixelCount = width / pixelSize;
 		verticalPixelCount = height / pixelSize;
 
-		unsigned int offset = 0;
-		for (unsigned int y = 0; y < verticalPixelCount; y++)
+		for (int i = 0; i < numberOfThreads; i++)
 		{
-			for (unsigned int x = 0; x < horizontalPixelCount; x++)
-			{
-				Color color = { StandingWave((static_cast<float>(x * pixelSize) + distance) / width), static_cast<float>(y * pixelSize) / height, 0.0f };
-				vertex[offset + 0] = { static_cast<float>(x * pixelSize)      , static_cast<float>(y * pixelSize)      , color.r, color.g, color.b };
-				vertex[offset + 1] = { static_cast<float>((x + 1) * pixelSize), static_cast<float>(y * pixelSize)      , color.r, color.g, color.b };
-				vertex[offset + 2] = { static_cast<float>((x + 1) * pixelSize), static_cast<float>((y + 1) * pixelSize), color.r, color.g, color.b };
-				vertex[offset + 3] = { static_cast<float>(x * pixelSize)      , static_cast<float>((y + 1) * pixelSize), color.r, color.g, color.b };
-				offset += 4;
-			}
+			threads[i] = std::async(std::launch::async, CreateVertexData, vertex, width, height, pixelSize, verticalPixelCount, horizontalPixelCount, distance, i, numberOfThreads);
 		}
-		vertexBuffer->SetData(vertex, verticalPixelCount * horizontalPixelCount * 4 * sizeof(Vertex2D));
 	}
 
 	void TestPixelQuads::OnRender()

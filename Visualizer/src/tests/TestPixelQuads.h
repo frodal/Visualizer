@@ -33,6 +33,8 @@ namespace Test {
 		std::unique_ptr<VertexBuffer> vertexBuffer;
 		std::unique_ptr<IndexBuffer> indexBuffer;
 		std::unique_ptr<Shader> shader;
+		static const int numberOfThreads = 2;
+		std::future<void> threads[numberOfThreads];
 	};
 
 }

@@ -31,10 +31,12 @@ namespace Test {
 		std::unique_ptr<Shader> shader;
 		std::unique_ptr<Texture> texture;
 		Pixel* pixels;
-		unsigned int width, height, pixelSize;
+		unsigned int width, height, pixelSize, horizontalPixelCount, verticalPixelCount;
 		float speed, distance;
 		unsigned int textureSlot;
 		glm::mat4 projection, view;
+		static const int numberOfThreads = 2;
+		std::future<void> threads[numberOfThreads];
 	};
 
 }

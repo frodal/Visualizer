@@ -5,8 +5,22 @@
 
 namespace Test {
 
+	void CreatePixelData(Pixel* pixels, unsigned int width, unsigned int height, unsigned int pixelSize, unsigned int verticalPixelCount, unsigned int horizontalPixelCount, float distance, int threadID, int numberOfThreads)
+	{
+		unsigned int startY = threadID * verticalPixelCount / numberOfThreads;
+		unsigned int endY = (threadID + 1) * verticalPixelCount / numberOfThreads;
+
+		for (unsigned int y = startY; y < endY; y++)
+		{
+			for (unsigned int x = 0; x < horizontalPixelCount; x++)
+			{
+				pixels[x + y * horizontalPixelCount] = { static_cast<uint8_t>(255 * StandingWave((static_cast<float>(x * pixelSize) + distance) / width)), static_cast<uint8_t>(255 * y * pixelSize / height), 0, 255 };
+			}
+		}
+	}
+
 	TestPixelTexture::TestPixelTexture(std::string& name)
-		: Test(name), width(1280), height(720), pixelSize(32),
+		: Test(name), width(1280), height(720), pixelSize(32), horizontalPixelCount(width / pixelSize), verticalPixelCount(height / pixelSize),
 		speed(250.0f), distance(0.0f),
 		textureSlot(0), projection(glm::ortho(0.0f,static_cast<float>(width), 0.0f, static_cast<float>(height))),
 		view(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0)))
@@ -26,6 +40,11 @@ namespace Test {
 		};
 
 		pixels = new Pixel[static_cast<size_t>(height) * static_cast<size_t>(width)];
+
+		for (int i = 0; i < numberOfThreads; i++)
+		{
+			threads[i] = std::async(std::launch::async, CreatePixelData, pixels, width, height, pixelSize, verticalPixelCount, horizontalPixelCount, distance, i, numberOfThreads);
+		}
 
 		Renderer renderer;
 		renderer.EnableBlend();
@@ -49,6 +68,12 @@ namespace Test {
 
 	TestPixelTexture::~TestPixelTexture()
 	{
+		for (int i = 0; i < numberOfThreads; i++)
+		{
+			if (threads[i].valid())
+				threads[i].wait();
+		}
+
 		delete[] pixels;
 	}
 
@@ -56,18 +81,20 @@ namespace Test {
 	{
 		distance += speed * deltaTime;
 
-		unsigned int verticalPixelCount = height / pixelSize;
-		unsigned int horizontalPixelCount = width / pixelSize;
-
-		for (unsigned int y = 0; y < verticalPixelCount; y++)
+		for (int i = 0; i < numberOfThreads; i++)
 		{
-			for (unsigned int x = 0; x < horizontalPixelCount; x++)
-			{
-				pixels[x + y * horizontalPixelCount] = { static_cast<uint8_t>(255 * StandingWave((static_cast<float>(x * pixelSize) + distance) / width)), static_cast<uint8_t>(255 * y * pixelSize / height), 0, 255 };
-			}
+			threads[i].wait();
 		}
 
 		texture->UpdateTexture(reinterpret_cast<unsigned char*>(pixels), horizontalPixelCount, verticalPixelCount);
+
+		verticalPixelCount = height / pixelSize;
+		horizontalPixelCount = width / pixelSize;
+
+		for (int i = 0; i < numberOfThreads; i++)
+		{
+			threads[i] = std::async(std::launch::async, CreatePixelData, pixels, width, height, pixelSize, verticalPixelCount, horizontalPixelCount, distance, i, numberOfThreads);
+		}
 	}
 
 	void TestPixelTexture::OnRender()
