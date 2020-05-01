@@ -13,6 +13,8 @@
 #include <array> // Standard array library
 #include <unordered_map> // Standard unordered map library
 #include <functional> // Standard functional library
+#include <thread> // Standard threading library
+#include <future> // Standard library part of the thread support library
 
 // OpenGL Math library, see https://glm.g-truc.net/0.9.9/index.html
 #define GLM_FORCE_MESSAGES
