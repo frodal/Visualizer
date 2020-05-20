@@ -18,8 +18,14 @@ public:
 
 	// Set uniform
 	void SetUniform1i(const std::string& name, int value);
+
 	void SetUniform1f(const std::string& name, float value);
+	void SetUniform2f(const std::string& name, float v0, float v1);
 	void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
+
+	void SetUniform1d(const std::string& name, double value);
+	void SetUniform2d(const std::string& name, double v0, double v1);
+	
 	void SetUniformMat4f(const std::string& name, const glm::mat4& matrix);
 private:
 	std::string filepath;
