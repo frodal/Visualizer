@@ -15,6 +15,7 @@ See the documentation of OpenGL, e.g., http://docs.gl/
 #include "tests/TestPixelQuads.h"
 #include "tests/TestPixelTexture.h"
 #include "tests/TestMatrixEffect.h"
+#include "tests/TestMandelbrot.h"
 
 
 /* Initial window title, width, height and Vsync setting */
@@ -52,6 +53,7 @@ int main(void)
 		testMenu->RegisterTest<Test::TestPixelQuads>("Pixel Engine quads");
 		testMenu->RegisterTest<Test::TestPixelTexture>("Pixel Engine texture");
 		testMenu->RegisterTest<Test::TestMatrixEffect>("The Matrix pixel effect");
+		testMenu->RegisterTest<Test::TestMandelbrot>("Mandelbrot fractal");
 
 		/* Loop until the user closes the window */
 		while (!window.ShouldClose())
