@@ -1,5 +1,6 @@
 #pragma once
 #include "PreCompiledHeader.h"
+#include "Window.h"
 
 namespace Test {
 
@@ -15,15 +16,18 @@ namespace Test {
 		virtual void OnRender() {}
 		virtual void OnImGuiRender() {}
 
+		virtual void SetWindow(Window* window) { this->window = window; }
+
 		virtual std::string GetTestName() { return "Test: " + testName; }
 	protected:
 		std::string testName;
+		Window* window = nullptr;
 	};
 
 	class TestMenu : public Test
 	{
 	public:
-		TestMenu(Test*& currentTestPointer);
+		TestMenu(Test*& currentTestPointer, Window* window);
 
 		virtual void OnImGuiRender() override;
 		virtual std::string GetTestName() override;

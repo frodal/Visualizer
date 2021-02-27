@@ -43,7 +43,7 @@ int main(void)
 
 		/* Tests */
 		Test::Test* currentTest = nullptr;
-		Test::TestMenu* testMenu = new Test::TestMenu(currentTest);
+		Test::TestMenu* testMenu = new Test::TestMenu(currentTest, &window);
 		currentTest = testMenu;
 		/* Registering tests */
 		testMenu->RegisterTest<Test::TestClearColor>("Clear color");

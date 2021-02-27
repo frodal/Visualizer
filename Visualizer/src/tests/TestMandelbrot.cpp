@@ -5,6 +5,8 @@
 
 namespace Test {
 
+	double* testScale;
+
 	TestMandelbrot::TestMandelbrot(std::string& name)
 		: Test(name), width(1280), height(720),
 		projection(glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height))),
@@ -42,6 +44,8 @@ namespace Test {
 		shader->SetUniform1d("scale", scale);
 		shader->SetUniform2d("pos", position.x, position.y);
 		shader->SetUniform1f("aspectRatio", static_cast<float>(width) / height);
+
+		testScale = &scale;
 	}
 
 	TestMandelbrot::~TestMandelbrot()
@@ -51,6 +55,25 @@ namespace Test {
 
 	void TestMandelbrot::OnUpdate(float deltaTime)
 	{
+		if (window->GetKey(GLFW_KEY_A) == GLFW_PRESS || window->GetKey(GLFW_KEY_LEFT) == GLFW_PRESS)
+		{
+			position.x -= scale * 0.02;
+		}
+		if (window->GetKey(GLFW_KEY_W) == GLFW_PRESS || window->GetKey(GLFW_KEY_UP) == GLFW_PRESS)
+		{
+			position.y += scale * 0.02;
+		}
+		if (window->GetKey(GLFW_KEY_S) == GLFW_PRESS || window->GetKey(GLFW_KEY_DOWN) == GLFW_PRESS)
+		{
+			position.y -= scale * 0.02;
+		}
+		if (window->GetKey(GLFW_KEY_D) == GLFW_PRESS || window->GetKey(GLFW_KEY_RIGHT) == GLFW_PRESS)
+		{
+			position.x += scale * 0.02;
+		}
+		/*double xpos, ypos;
+		glfwGetCursorPos(window->GetNativeWindow(), &xpos, &ypos);
+		std::cout << xpos << ", " << ypos << std::endl;*/
 	}
 
 	void TestMandelbrot::OnRender()
@@ -110,6 +133,24 @@ namespace Test {
 		}
 		
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	}
+
+	void TestMandelbrot::SetWindow(Window* window)
+	{
+		this->window = window; 
+		glfwSetScrollCallback(window->GetNativeWindow(), [](GLFWwindow* window, double xOffset, double yOffset)
+			{
+				if (yOffset > 0)
+				{
+					*testScale /= 1.1 * yOffset;
+				}
+				else
+				{
+					*testScale *= 1.1 * -yOffset;
+				}
+				if (*testScale < 3.0e-15)
+					*testScale = 3.0e-15;
+			});
 	}
 
 }
