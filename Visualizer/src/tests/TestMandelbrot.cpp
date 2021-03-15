@@ -6,6 +6,9 @@
 namespace Test {
 
 	double* testScale;
+	double testMousePositionX, testMousePositionY;
+	glm::dvec2* testPosition;
+	double testAspectRatio;
 
 	TestMandelbrot::TestMandelbrot(std::string& name)
 		: Test(name), width(1280), height(720),
@@ -46,6 +49,8 @@ namespace Test {
 		shader->SetUniform1f("aspectRatio", static_cast<float>(width) / height);
 
 		testScale = &scale;
+		testPosition = &position;
+		testAspectRatio = static_cast<float>(width) / height;
 	}
 
 	TestMandelbrot::~TestMandelbrot()
@@ -71,9 +76,6 @@ namespace Test {
 		{
 			position.x += scale * 0.02;
 		}
-		/*double xpos, ypos;
-		glfwGetCursorPos(window->GetNativeWindow(), &xpos, &ypos);
-		std::cout << xpos << ", " << ypos << std::endl;*/
 	}
 
 	void TestMandelbrot::OnRender()
@@ -140,6 +142,7 @@ namespace Test {
 		this->window = window; 
 		glfwSetScrollCallback(window->GetNativeWindow(), [](GLFWwindow* window, double xOffset, double yOffset)
 			{
+				double oldScale = *testScale;
 				if (yOffset > 0)
 				{
 					*testScale /= 1.1 * yOffset;
@@ -150,6 +153,16 @@ namespace Test {
 				}
 				if (*testScale < 3.0e-15)
 					*testScale = 3.0e-15;
+				
+				(*testPosition).x += (oldScale - *testScale) * testMousePositionX * testAspectRatio;
+				(*testPosition).y += (oldScale - *testScale) * testMousePositionY;
+			});
+		glfwSetCursorPosCallback(window->GetNativeWindow(), [](GLFWwindow* window, double xpos, double ypos)
+			{
+				int width, height;
+				glfwGetWindowSize(window, &width, &height);
+				testMousePositionX = 2 * xpos / width - 1.0;
+				testMousePositionY = 1.0 - 2 * ypos / height;
 			});
 	}
 
