@@ -20,6 +20,8 @@ namespace Test {
 		virtual void OnUpdate(float deltaTime) override;
 		virtual void OnRender() override;
 		virtual void OnImGuiRender() override;
+
+		virtual void SetWindow(Window* window) override;
 	private:
 		std::unique_ptr<VertexArray> vertexArray;
 		std::unique_ptr<VertexBuffer> vertexBuffer;

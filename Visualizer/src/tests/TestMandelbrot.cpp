@@ -5,6 +5,11 @@
 
 namespace Test {
 
+	double* testScale;
+	glm::dvec2 testMousePosition;
+	glm::dvec2* testPosition;
+	double testAspectRatio;
+
 	TestMandelbrot::TestMandelbrot(std::string& name)
 		: Test(name), width(1280), height(720),
 		projection(glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height))),
@@ -42,6 +47,10 @@ namespace Test {
 		shader->SetUniform1d("scale", scale);
 		shader->SetUniform2d("pos", position.x, position.y);
 		shader->SetUniform1f("aspectRatio", static_cast<float>(width) / height);
+
+		testScale = &scale;
+		testPosition = &position;
+		testAspectRatio = static_cast<float>(width) / height;
 	}
 
 	TestMandelbrot::~TestMandelbrot()
@@ -51,6 +60,22 @@ namespace Test {
 
 	void TestMandelbrot::OnUpdate(float deltaTime)
 	{
+		if (window->GetKey(GLFW_KEY_A) == GLFW_PRESS || window->GetKey(GLFW_KEY_LEFT) == GLFW_PRESS)
+		{
+			position.x -= scale * 0.02;
+		}
+		if (window->GetKey(GLFW_KEY_W) == GLFW_PRESS || window->GetKey(GLFW_KEY_UP) == GLFW_PRESS)
+		{
+			position.y += scale * 0.02;
+		}
+		if (window->GetKey(GLFW_KEY_S) == GLFW_PRESS || window->GetKey(GLFW_KEY_DOWN) == GLFW_PRESS)
+		{
+			position.y -= scale * 0.02;
+		}
+		if (window->GetKey(GLFW_KEY_D) == GLFW_PRESS || window->GetKey(GLFW_KEY_RIGHT) == GLFW_PRESS)
+		{
+			position.x += scale * 0.02;
+		}
 	}
 
 	void TestMandelbrot::OnRender()
@@ -110,6 +135,35 @@ namespace Test {
 		}
 		
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	}
+
+	void TestMandelbrot::SetWindow(Window* window)
+	{
+		this->window = window; 
+		glfwSetScrollCallback(window->GetNativeWindow(), [](GLFWwindow* window, double xOffset, double yOffset)
+			{
+				double oldScale = *testScale;
+				if (yOffset > 0)
+				{
+					*testScale /= 1.1 * yOffset;
+				}
+				else
+				{
+					*testScale *= 1.1 * -yOffset;
+				}
+				if (*testScale < 3.0e-15)
+					*testScale = 3.0e-15;
+				
+				(*testPosition).x += (oldScale - *testScale) * testMousePosition.x * testAspectRatio;
+				(*testPosition).y += (oldScale - *testScale) * testMousePosition.y;
+			});
+		glfwSetCursorPosCallback(window->GetNativeWindow(), [](GLFWwindow* window, double xpos, double ypos)
+			{
+				int width, height;
+				glfwGetWindowSize(window, &width, &height);
+				testMousePosition.x = 2 * xpos / width - 1.0;
+				testMousePosition.y = 1.0 - 2 * ypos / height;
+			});
 	}
 
 }
