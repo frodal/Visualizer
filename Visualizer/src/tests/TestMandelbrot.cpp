@@ -6,7 +6,7 @@
 namespace Test {
 
 	double* testScale;
-	double testMousePositionX, testMousePositionY;
+	glm::dvec2 testMousePosition;
 	glm::dvec2* testPosition;
 	double testAspectRatio;
 
@@ -154,15 +154,15 @@ namespace Test {
 				if (*testScale < 3.0e-15)
 					*testScale = 3.0e-15;
 				
-				(*testPosition).x += (oldScale - *testScale) * testMousePositionX * testAspectRatio;
-				(*testPosition).y += (oldScale - *testScale) * testMousePositionY;
+				(*testPosition).x += (oldScale - *testScale) * testMousePosition.x * testAspectRatio;
+				(*testPosition).y += (oldScale - *testScale) * testMousePosition.y;
 			});
 		glfwSetCursorPosCallback(window->GetNativeWindow(), [](GLFWwindow* window, double xpos, double ypos)
 			{
 				int width, height;
 				glfwGetWindowSize(window, &width, &height);
-				testMousePositionX = 2 * xpos / width - 1.0;
-				testMousePositionY = 1.0 - 2 * ypos / height;
+				testMousePosition.x = 2 * xpos / width - 1.0;
+				testMousePosition.y = 1.0 - 2 * ypos / height;
 			});
 	}
 
