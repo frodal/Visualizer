@@ -46,6 +46,8 @@ project "Visualizer"
     pchheader "PreCompiledHeader.h"
     pchsource "Visualizer/src/PreCompiledHeader.cpp"
 
+    postbuildcommands { "{COPYDIR} %[Visualizer/resources] %[bin/" .. outputdir .. "/%{prj.name}/resources]" }
+
     files
     {
         "%{prj.name}/src/**.h",
