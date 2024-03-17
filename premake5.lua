@@ -125,11 +125,15 @@ project "GLFW"
     {
         "%{VendorDir.GLFW}/include/GLFW/glfw3.h",
         "%{VendorDir.GLFW}/include/GLFW/glfw3native.h",
-        "%{VendorDir.GLFW}/src/glfw_config.h",
         "%{VendorDir.GLFW}/src/context.c",
         "%{VendorDir.GLFW}/src/init.c",
         "%{VendorDir.GLFW}/src/input.c",
         "%{VendorDir.GLFW}/src/monitor.c",
+        "%{VendorDir.GLFW}/src/null_init.c",
+        "%{VendorDir.GLFW}/src/null_joystick.c",
+        "%{VendorDir.GLFW}/src/null_monitor.c",
+        "%{VendorDir.GLFW}/src/null_window.c",
+        "%{VendorDir.GLFW}/src/platform.c",
         "%{VendorDir.GLFW}/src/vulkan.c",
         "%{VendorDir.GLFW}/src/window.c"
     }
@@ -141,6 +145,7 @@ project "GLFW"
         {
             "%{VendorDir.GLFW}/src/win32_init.c",
             "%{VendorDir.GLFW}/src/win32_joystick.c",
+            "%{VendorDir.GLFW}/src/win32_module.c",
             "%{VendorDir.GLFW}/src/win32_monitor.c",
             "%{VendorDir.GLFW}/src/win32_time.c",
             "%{VendorDir.GLFW}/src/win32_thread.c",
