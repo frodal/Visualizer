@@ -9,6 +9,8 @@ namespace Test {
 	glm::dvec2 testMousePosition;
 	glm::dvec2* testPosition;
 	double testAspectRatio;
+	GLFWscrollfun ImguiScrollCallback;
+	GLFWcursorposfun ImguiCursorPosCallback;
 
 	TestMandelbrot::TestMandelbrot(std::string& name)
 		: Test(name), width(1280), height(720),
@@ -55,11 +57,18 @@ namespace Test {
 
 	TestMandelbrot::~TestMandelbrot()
 	{
-
+		// Set scroll callback and cursor position callback back to the ones from ImGui
+		glfwSetScrollCallback(this->window->GetNativeWindow(), ImguiScrollCallback);
+		glfwSetCursorPosCallback(this->window->GetNativeWindow(), ImguiCursorPosCallback);
 	}
 
 	void TestMandelbrot::OnUpdate(float deltaTime)
 	{
+		// Check if ImGui has already handled the keyboard input
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.WantCaptureKeyboard)
+			return;
+
 		if (window->GetKey(GLFW_KEY_A) == GLFW_PRESS || window->GetKey(GLFW_KEY_LEFT) == GLFW_PRESS)
 		{
 			position.x -= scale * 0.02;
@@ -139,9 +148,21 @@ namespace Test {
 
 	void TestMandelbrot::SetWindow(Window* window)
 	{
-		this->window = window; 
+		this->window = window;
+
+		// Retrieve scroll callback set from ImGui
+		ImguiScrollCallback = glfwSetScrollCallback(window->GetNativeWindow(), NULL);
+
 		glfwSetScrollCallback(window->GetNativeWindow(), [](GLFWwindow* window, double xOffset, double yOffset)
 			{
+				// Calls ImGui callback function
+				ImguiScrollCallback(window, xOffset, yOffset);
+				
+				// // Check if ImGui has already handled the mouse input
+				ImGuiIO& io = ImGui::GetIO();
+				if (io.WantCaptureMouse)
+					return;
+
 				double oldScale = *testScale;
 				if (yOffset > 0)
 				{
@@ -153,12 +174,19 @@ namespace Test {
 				}
 				if (*testScale < 3.0e-15)
 					*testScale = 3.0e-15;
-				
+
 				(*testPosition).x += (oldScale - *testScale) * testMousePosition.x * testAspectRatio;
 				(*testPosition).y += (oldScale - *testScale) * testMousePosition.y;
 			});
+
+		// Retrieve cursor position callback set from ImGui
+		ImguiCursorPosCallback = glfwSetCursorPosCallback(window->GetNativeWindow(), NULL);
+
 		glfwSetCursorPosCallback(window->GetNativeWindow(), [](GLFWwindow* window, double xpos, double ypos)
 			{
+				// Calls ImGui callback function
+				ImguiCursorPosCallback(window, xpos, ypos);
+
 				int width, height;
 				glfwGetWindowSize(window, &width, &height);
 				testMousePosition.x = 2 * xpos / width - 1.0;
