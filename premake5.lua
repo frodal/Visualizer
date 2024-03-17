@@ -18,7 +18,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"]  = "Visualizer/vendor/glfw/include"
-IncludeDir["GLEW"]  = "Visualizer/vendor/GLEW-2.1.0/include"
+IncludeDir["GLEW"]  = "Visualizer/vendor/glew-2.2.0/include"
 IncludeDir["ImGui"] = "Visualizer/vendor/imgui"
 IncludeDir["glm"]   = "Visualizer/vendor/glm"
 IncludeDir["stb"]   = "Visualizer/vendor/stb"
@@ -77,13 +77,13 @@ project "Visualizer"
     filter "architecture:x64"
         links
         {
-            "Visualizer/vendor/GLEW-2.1.0/lib/Win64/glew32s.lib"
+            "Visualizer/vendor/glew-2.2.0/lib/Win64/glew32s.lib"
         }
 
     filter "architecture:x86"
         links
         {
-            "Visualizer/vendor/GLEW-2.1.0/lib/Win32/glew32s.lib"
+            "Visualizer/vendor/glew-2.2.0/lib/Win32/glew32s.lib"
         }
 
     filter "system:windows"
