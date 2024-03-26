@@ -116,6 +116,7 @@ project "Visualizer"
         kind "WindowedApp"
         runtime "Release"
         optimize "on"
+        symbols "off"
         links
         {
             "Visualizer/vendor/assimp/build/lib/Release/assimp-vc143-mt.lib",
@@ -183,6 +184,7 @@ project "GLFW"
     filter "configurations:Release"
         runtime "Release"
         optimize "on"
+        symbols "off"
 
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
@@ -220,3 +222,4 @@ project "ImGui"
     filter "configurations:Release"
         runtime "Release"
         optimize "on"
+        symbols "off"
