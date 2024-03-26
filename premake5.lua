@@ -17,11 +17,13 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["GLFW"]  = "Visualizer/vendor/glfw/include"
-IncludeDir["GLEW"]  = "Visualizer/vendor/glew-2.2.0/include"
-IncludeDir["ImGui"] = "Visualizer/vendor/imgui"
-IncludeDir["glm"]   = "Visualizer/vendor/glm"
-IncludeDir["stb"]   = "Visualizer/vendor/stb"
+IncludeDir["GLFW"]          = "Visualizer/vendor/glfw/include"
+IncludeDir["GLEW"]          = "Visualizer/vendor/glew-2.2.0/include"
+IncludeDir["ImGui"]         = "Visualizer/vendor/imgui"
+IncludeDir["glm"]           = "Visualizer/vendor/glm"
+IncludeDir["stb"]           = "Visualizer/vendor/stb"
+IncludeDir["assimp"]        = "Visualizer/vendor/assimp/include"
+IncludeDir["assimp_config"] = "Visualizer/vendor/assimp/build/include"
 
 VendorDir = {}
 VendorDir["GLFW"] = "Visualizer/vendor/glfw"
@@ -64,7 +66,9 @@ project "Visualizer"
         "%{IncludeDir.GLEW}",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
-        "%{IncludeDir.stb}"
+        "%{IncludeDir.stb}",
+        "%{IncludeDir.assimp}",
+        "%{IncludeDir.assimp_config}"
     }
 
     links 
@@ -102,10 +106,20 @@ project "Visualizer"
         {
             "DEBUG"
         }
+        links
+        {
+            "Visualizer/vendor/assimp/build/lib/Debug/assimp-vc143-mtd.lib",
+            "Visualizer/vendor/assimp/build/contrib/zlib/Debug/zlibstaticd.lib"
+        }
 
     filter "configurations:Release"
         runtime "Release"
         optimize "on"
+        links
+        {
+            "Visualizer/vendor/assimp/build/lib/Release/assimp-vc143-mt.lib",
+            "Visualizer/vendor/assimp/build/contrib/zlib/Release/zlibstatic.lib"
+        }
 
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
