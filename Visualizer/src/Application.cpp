@@ -26,7 +26,7 @@ constexpr unsigned int HEIGHT = 720;
 constexpr bool VSYNC = true;
 
 /* Entry Point*/
-int main(void)
+int EntryPoint(void)
 {
 	/* Scope for certain variables */
 	{
@@ -79,7 +79,7 @@ int main(void)
 					delete currentTest;
 					currentTest = testMenu;
 				}
-				else if (currentTest == testMenu && ImGui::Button("Quit")) 
+				else if (currentTest == testMenu && ImGui::Button("Quit"))
 				{
 					window.Close();
 				}
@@ -96,7 +96,7 @@ int main(void)
 		if (currentTest != testMenu)
 			delete testMenu;
 		delete currentTest;
-		
+
 		// Cleanup
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
@@ -106,3 +106,25 @@ int main(void)
 	Window::TerminateWindow();
 	return 0;
 }
+
+#ifdef DEBUG
+
+int main(void)
+{
+	return EntryPoint();
+}
+
+#else // not DEBUG
+
+#include <Windows.h>
+
+static int APIENTRY WinMain(
+	_In_ HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPSTR lpCmdLine,
+	_In_ int nShowCmd)
+{
+	return EntryPoint();
+}
+
+#endif // DEBUG

@@ -113,6 +113,7 @@ project "Visualizer"
         }
 
     filter "configurations:Release"
+        kind "WindowedApp"
         runtime "Release"
         optimize "on"
         links
