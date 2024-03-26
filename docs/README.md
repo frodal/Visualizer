@@ -16,14 +16,16 @@ To get a local copy up and running follow these simple steps.
 
 1. Clone the project with all its submodules (`git clone --recursive https://github.com/frodal/Visualizer.git`)
 2. Make sure you have [Microsoft Visual Studio 2022](https://visualstudio.microsoft.com) installed with the visual C++ compiler
-3. Run the `GenerateProjects.bat` file located in the root directory to generate the Visual Studio solution files with [Premake](https://github.com/premake/premake-core)
-4. Open up the generated `Visualizer.sln` file in Visual Studio
-5. Build the solution (`Ctrl`+`Shift`+`B`) :sunglasses:
+3. Make sure you have [CMake](https://cmake.org/) installed and is on PATH.
+4. Run the `GenerateProjects.bat` file located in the root directory to generate the Visual Studio solution files with [Premake](https://github.com/premake/premake-core)
+5. Open up the generated `Visualizer.sln` file in Visual Studio
+6. Build the solution (`Ctrl`+`Shift`+`B`) :sunglasses:
 
 ### Dependencies
 
 The project depends on the following libraries and are located in the `./Visualizer/vendor/` directory
 
+* [assimp](https://github.com/assimp/assimp)
 * [GLEW](https://github.com/nigels-com/glew)
 * [GLFW](https://github.com/glfw/glfw)
 * [glm](https://github.com/g-truc/glm)
