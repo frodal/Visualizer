@@ -10,9 +10,9 @@
 namespace Test {
 
 	TestDiscreteCircle::TestDiscreteCircle(std::string& name)
-		: Test(name), projection(glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f)),
-		view(glm::translate(glm::mat4(1.0f), glm::vec3(640, 360, 0))),
-		model(glm::mat4(1.0f)),Ntriangles(6),radius(200),
+		: Test(name), projection(glm::ortho(-640.0f, 640.0f, -360.0f, 360.0f)),
+		view(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f))),
+		model(glm::mat4(1.0f)), Ntriangles(6), radius(200),
 		circleColor{ 0.2f, 0.2f, 0.2f, 1.0f }, backgroundColor{ 0.7f, 0.7f, 0.7f, 1.0f }
 	{
 		Renderer renderer;
@@ -29,6 +29,13 @@ namespace Test {
 
 	void TestDiscreteCircle::OnUpdate(float deltaTime)
 	{
+		// Update projection matrix with latest viewport size
+		float halfWidth = static_cast<float>(window->GetWidth()) / 2.0f;
+		float halfHeight = static_cast<float>(window->GetHeight()) / 2.0f;
+		projection = glm::ortho(-halfWidth, halfWidth, -halfHeight, halfHeight);
+
+		// Update model
+		model = glm::scale(glm::mat4(1.0f), glm::vec3(radius, radius, 0.0f));
 	}
 
 	void TestDiscreteCircle::OnRender()
@@ -66,7 +73,6 @@ namespace Test {
 
 		IndexBuffer indexBuffer(indices, Ntriangles * 3);
 
-		model = glm::scale(glm::mat4(1.0f), glm::vec3(radius, radius, 0.0f));
 		shader->Bind();
 		shader->SetUniformMat4f("u_MVP", projection * view * model);
 		shader->SetUniform4f("u_Color", circleColor[0], circleColor[1], circleColor[2], circleColor[3]);

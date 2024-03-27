@@ -10,3 +10,6 @@
 [submodule "Visualizer/vendor/stb"]
 	path = Visualizer/vendor/stb
 	url = git@github.com:nothings/stb.git
+[submodule "Visualizer/vendor/assimp"]
+	path = Visualizer/vendor/assimp
+	url = https://github.com/assimp/assimp.git

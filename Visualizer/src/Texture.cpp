@@ -13,13 +13,13 @@ Texture::Texture()
 Texture::Texture(const std::string& path)
 	: rendererID(0), filepath(path), localBuffer(nullptr), width(0), height(0), BPP(0)
 {
-	stbi_set_flip_vertically_on_load(1);
-	localBuffer = stbi_load(path.c_str(), &width, &height, &BPP, 4);
+	LoadAndSetup(path, GL_LINEAR);
+}
 
-	Setup(localBuffer, width, height, GL_LINEAR);
-
-	if (localBuffer)
-		stbi_image_free(localBuffer);
+Texture::Texture(const std::string& path, const std::string& textureType)
+	: rendererID(0), filepath(path), textureType(textureType), localBuffer(nullptr), width(0), height(0), BPP(0)
+{
+	LoadAndSetup(path, GL_LINEAR);
 }
 
 Texture::Texture(unsigned char* buffer, int Width, int Height)
@@ -67,4 +67,15 @@ void Texture::Setup(unsigned char* buffer, int Width, int Height, GLint filterin
 
 	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer));
 	GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+}
+
+void Texture::LoadAndSetup(const std::string& path, GLint sampling)
+{
+	stbi_set_flip_vertically_on_load(1);
+	localBuffer = stbi_load(path.c_str(), &width, &height, &BPP, 4);
+
+	Setup(localBuffer, width, height, sampling);
+
+	if (localBuffer)
+		stbi_image_free(localBuffer);
 }

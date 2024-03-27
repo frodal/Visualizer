@@ -9,13 +9,15 @@ namespace Test {
 	glm::dvec2 testMousePosition;
 	glm::dvec2* testPosition;
 	double testAspectRatio;
+	GLFWscrollfun ImguiScrollCallback;
+	GLFWcursorposfun ImguiCursorPosCallback;
 
 	TestMandelbrot::TestMandelbrot(std::string& name)
 		: Test(name), width(1280), height(720),
 		projection(glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height))),
-		view(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))), 
+		view(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
 		position(glm::dvec2(-0.5, 0.0)),
-		scale(1.0), MaxIterations(5000)
+		scale(1.0), MaxIterations(5000), aspectRatio(static_cast<float>(width) / static_cast<float>(height))
 	{
 		/* Vertex positions*/
 		float positions[] = {
@@ -46,20 +48,27 @@ namespace Test {
 		shader->SetUniform1i("MaxIterations", MaxIterations);
 		shader->SetUniform1d("scale", scale);
 		shader->SetUniform2d("pos", position.x, position.y);
-		shader->SetUniform1f("aspectRatio", static_cast<float>(width) / height);
+		shader->SetUniform1f("aspectRatio", aspectRatio);
 
 		testScale = &scale;
 		testPosition = &position;
-		testAspectRatio = static_cast<float>(width) / height;
+		testAspectRatio = static_cast<double>(aspectRatio);
 	}
 
 	TestMandelbrot::~TestMandelbrot()
 	{
-
+		// Set scroll callback and cursor position callback back to the ones from ImGui
+		glfwSetScrollCallback(this->window->GetNativeWindow(), ImguiScrollCallback);
+		glfwSetCursorPosCallback(this->window->GetNativeWindow(), ImguiCursorPosCallback);
 	}
 
 	void TestMandelbrot::OnUpdate(float deltaTime)
 	{
+		// Check if ImGui has already handled the keyboard input
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.WantCaptureKeyboard)
+			return;
+
 		if (window->GetKey(GLFW_KEY_A) == GLFW_PRESS || window->GetKey(GLFW_KEY_LEFT) == GLFW_PRESS)
 		{
 			position.x -= scale * 0.02;
@@ -82,10 +91,14 @@ namespace Test {
 	{
 		Renderer renderer;
 
+		aspectRatio = static_cast<float>(window->GetWidth()) / static_cast<float>(window->GetHeight());
+		testAspectRatio = static_cast<double>(aspectRatio);
+
 		shader->Bind();
 		shader->SetUniform1i("MaxIterations", MaxIterations);
 		shader->SetUniform1d("scale", scale);
 		shader->SetUniform2d("pos", position.x, position.y);
+		shader->SetUniform1f("aspectRatio", aspectRatio);
 
 		renderer.Draw(*vertexArray, *indexBuffer, *shader);
 	}
@@ -139,9 +152,21 @@ namespace Test {
 
 	void TestMandelbrot::SetWindow(Window* window)
 	{
-		this->window = window; 
+		this->window = window;
+
+		// Retrieve scroll callback set from ImGui
+		ImguiScrollCallback = glfwSetScrollCallback(window->GetNativeWindow(), NULL);
+
 		glfwSetScrollCallback(window->GetNativeWindow(), [](GLFWwindow* window, double xOffset, double yOffset)
 			{
+				// Calls ImGui callback function
+				ImguiScrollCallback(window, xOffset, yOffset);
+				
+				// // Check if ImGui has already handled the mouse input
+				ImGuiIO& io = ImGui::GetIO();
+				if (io.WantCaptureMouse)
+					return;
+
 				double oldScale = *testScale;
 				if (yOffset > 0)
 				{
@@ -153,12 +178,19 @@ namespace Test {
 				}
 				if (*testScale < 3.0e-15)
 					*testScale = 3.0e-15;
-				
+
 				(*testPosition).x += (oldScale - *testScale) * testMousePosition.x * testAspectRatio;
 				(*testPosition).y += (oldScale - *testScale) * testMousePosition.y;
 			});
+
+		// Retrieve cursor position callback set from ImGui
+		ImguiCursorPosCallback = glfwSetCursorPosCallback(window->GetNativeWindow(), NULL);
+
 		glfwSetCursorPosCallback(window->GetNativeWindow(), [](GLFWwindow* window, double xpos, double ypos)
 			{
+				// Calls ImGui callback function
+				ImguiCursorPosCallback(window, xpos, ypos);
+
 				int width, height;
 				glfwGetWindowSize(window, &width, &height);
 				testMousePosition.x = 2 * xpos / width - 1.0;

@@ -6,9 +6,9 @@
 namespace Test {
 
 	Test3DCube::Test3DCube(std::string& name)
-		: Test(name), projection(glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, 0.1f, 1000.0f)),
-		view(glm::translate(glm::mat4(1.0f), glm::vec3(640, 360, -500.0f))),
-		model(glm::mat4(1.0f)), size(100.0f), speed(1.0f),
+		: Test(name), projection(glm::ortho(-640.0f, 640.0f, -360.0f, 360.0f, 0.1f, 1000.0f)),
+		view(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -500.0f))),
+		model(glm::mat4(1.0f)), size(100.0f), speed(1.0f), rotationAngle(0),
 		cubeColor{ 0.2f, 0.2f, 0.2f, 1.0f },
 		backgroundColor{ 0.7f, 0.7f, 0.7f, 1.0f }
 	{
@@ -67,22 +67,31 @@ namespace Test {
 
 	void Test3DCube::OnUpdate(float deltaTime)
 	{
+		// Update projection matrix with latest viewport size
+		float halfWidth = static_cast<float>(window->GetWidth()) / 2.0f;
+		float halfHeight = static_cast<float>(window->GetHeight()) / 2.0f;
+		projection = glm::ortho(-halfWidth, halfWidth, -halfHeight, halfHeight, 0.1f, 1000.0f);
+
+		// Update model scale and rotation
+		model = glm::scale(glm::mat4(1.0f), glm::vec3(size, size, size)); // Scales the model
+		rotationAngle += deltaTime * speed;
+		model = glm::rotate(model, rotationAngle, glm::vec3(1.0f, 1.0f, 0.0f)); // rotates the model about the vector (1,1,0)
 	}
 
 	void Test3DCube::OnRender()
 	{
 		Renderer renderer;
-
 		renderer.SetClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
 		renderer.Clear();
-
-		model = glm::scale(glm::mat4(1.0f), glm::vec3(size, size, size)); // Scales the model
-		model = glm::rotate(model, static_cast<float>(Window::GetTime()) * speed, glm::vec3(1.0f, 1.0f, 0.0f)); // rotates the model about the vector (1,1,0)
+		
+		// Rendering cube
 		shader->Bind();
 		shader->SetUniformMat4f("u_MVP", projection * view * model);
 		shader->SetUniform4f("u_Color", cubeColor[0], cubeColor[1], cubeColor[2], cubeColor[3]);
 
 		renderer.Draw(*vertexArray, *indexBuffer, *shader);
+
+		// Rendering cube wire-frame
 		model = glm::scale(model, glm::vec3(1.005f, 1.005f, 1.005f)); // Scales the model
 		shader->SetUniformMat4f("u_MVP", projection * view * model);
 		shader->SetUniform4f("u_Color", 0.0f, 0.0f, 0.0f, 1.0f);

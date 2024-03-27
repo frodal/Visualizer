@@ -32,6 +32,7 @@ namespace Test {
 		glm::dvec2 position;
 		double scale;
 		int MaxIterations;
+		float aspectRatio;
 	};
 
 }

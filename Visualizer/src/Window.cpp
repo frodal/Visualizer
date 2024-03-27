@@ -104,10 +104,12 @@ void Window::Init(const WindowProps& props)
 		ASSERT(false);
 	}
 
+#ifdef DEBUG
 	/* Prints the current versions used to the console*/
 	std::cout << "Current GLFW version:   " << glfwGetVersionString() << std::endl;
 	std::cout << "Current GLEW version:   " << glewGetString(GLEW_VERSION) << std::endl;
 	std::cout << "Current OpenGL version: " << glGetString(GL_VERSION) << std::endl;
+#endif // DEBUG
 }
 
 void Window::Shutdown()

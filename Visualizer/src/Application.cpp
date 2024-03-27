@@ -16,6 +16,7 @@ See the documentation of OpenGL, e.g., http://docs.gl/
 #include "tests/TestPixelTexture.h"
 #include "tests/TestMatrixEffect.h"
 #include "tests/TestMandelbrot.h"
+#include "tests/Test3Dmodel.h"
 
 
 /* Initial window title, width, height and Vsync setting */
@@ -25,7 +26,7 @@ constexpr unsigned int HEIGHT = 720;
 constexpr bool VSYNC = true;
 
 /* Entry Point*/
-int main(void)
+int EntryPoint(void)
 {
 	/* Scope for certain variables */
 	{
@@ -54,6 +55,7 @@ int main(void)
 		testMenu->RegisterTest<Test::TestPixelTexture>("Pixel Engine texture");
 		testMenu->RegisterTest<Test::TestMatrixEffect>("The Matrix pixel effect");
 		testMenu->RegisterTest<Test::TestMandelbrot>("Mandelbrot fractal");
+		testMenu->RegisterTest<Test::Test3Dmodel>("3D model");
 
 		/* Loop until the user closes the window */
 		while (!window.ShouldClose())
@@ -77,7 +79,7 @@ int main(void)
 					delete currentTest;
 					currentTest = testMenu;
 				}
-				else if (currentTest == testMenu && ImGui::Button("Quit")) 
+				else if (currentTest == testMenu && ImGui::Button("Quit"))
 				{
 					window.Close();
 				}
@@ -94,7 +96,7 @@ int main(void)
 		if (currentTest != testMenu)
 			delete testMenu;
 		delete currentTest;
-		
+
 		// Cleanup
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
@@ -104,3 +106,23 @@ int main(void)
 	Window::TerminateWindow();
 	return 0;
 }
+
+#ifdef DEBUG
+
+int main(void)
+{
+	return EntryPoint();
+}
+
+#else // not DEBUG
+
+int APIENTRY WinMain(
+	_In_ HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPSTR lpCmdLine,
+	_In_ int nShowCmd)
+{
+	return EntryPoint();
+}
+
+#endif // DEBUG

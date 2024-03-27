@@ -1,5 +1,10 @@
 #pragma once
 
+#ifndef DEBUG
+#include <Windows.h>
+#endif // !DEBUG
+
+
 // Helper libraries for creating a OpenGL contex windows and retriving OpenGL functions from the graphics driver
 #include <GL/glew.h> // See http://glew.sourceforge.net/ for the documentation and to download the newest version!
 #include <GLFW/glfw3.h> // See https://www.glfw.org/ for the documentation and to download the newest version!
@@ -22,10 +27,10 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 // Dear ImGui: Bloat-free Immediate Mode Graphical User interface for C++ with minimal dependencies, see https://github.com/ocornut/imgui
-#define IMGUI_IMPL_OPENGL_LOADER_GLEW
+#define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 #include "imgui.h"
-#include "examples/imgui_impl_opengl3.h"
-#include "examples/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
+#include "backends/imgui_impl_glfw.h"
 
 // Handy template to get the length of an array
 template<typename T, std::size_t N>
