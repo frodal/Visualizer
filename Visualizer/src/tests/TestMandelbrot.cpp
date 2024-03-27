@@ -15,9 +15,9 @@ namespace Test {
 	TestMandelbrot::TestMandelbrot(std::string& name)
 		: Test(name), width(1280), height(720),
 		projection(glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height))),
-		view(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))), 
+		view(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
 		position(glm::dvec2(-0.5, 0.0)),
-		scale(1.0), MaxIterations(5000)
+		scale(1.0), MaxIterations(5000), aspectRatio(static_cast<float>(width) / static_cast<float>(height))
 	{
 		/* Vertex positions*/
 		float positions[] = {
@@ -48,11 +48,11 @@ namespace Test {
 		shader->SetUniform1i("MaxIterations", MaxIterations);
 		shader->SetUniform1d("scale", scale);
 		shader->SetUniform2d("pos", position.x, position.y);
-		shader->SetUniform1f("aspectRatio", static_cast<float>(width) / height);
+		shader->SetUniform1f("aspectRatio", aspectRatio);
 
 		testScale = &scale;
 		testPosition = &position;
-		testAspectRatio = static_cast<float>(width) / height;
+		testAspectRatio = static_cast<double>(aspectRatio);
 	}
 
 	TestMandelbrot::~TestMandelbrot()
@@ -91,10 +91,14 @@ namespace Test {
 	{
 		Renderer renderer;
 
+		aspectRatio = static_cast<float>(window->GetWidth()) / static_cast<float>(window->GetHeight());
+		testAspectRatio = static_cast<double>(aspectRatio);
+
 		shader->Bind();
 		shader->SetUniform1i("MaxIterations", MaxIterations);
 		shader->SetUniform1d("scale", scale);
 		shader->SetUniform2d("pos", position.x, position.y);
+		shader->SetUniform1f("aspectRatio", aspectRatio);
 
 		renderer.Draw(*vertexArray, *indexBuffer, *shader);
 	}

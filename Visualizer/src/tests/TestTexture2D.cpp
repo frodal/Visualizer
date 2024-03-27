@@ -6,7 +6,7 @@
 namespace Test {
 
 	TestTexture2D::TestTexture2D(std::string& name)
-		: Test(name), textureSlot(0), projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f)),
+		: Test(name), textureSlot(0), projection(glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f)),
 		view(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
 		translationA(200, 200, 0), translationB(400, 200, 0)
 	{
@@ -49,6 +49,10 @@ namespace Test {
 
 	void TestTexture2D::OnUpdate(float deltaTime)
 	{
+		// Update projection matrix with latest viewport size
+		float width = static_cast<float>(window->GetWidth());
+		float height = static_cast<float>(window->GetHeight());
+		projection = glm::ortho(0.0f, width, 0.0f, height);
 	}
 
 	void TestTexture2D::OnRender()
@@ -80,8 +84,16 @@ namespace Test {
 
 	void TestTexture2D::OnImGuiRender()
 	{
-		ImGui::SliderFloat2("Translation A", &translationA.x, 0.0f, 960.0f);
-		ImGui::SliderFloat2("Translation B", &translationB.x, 0.0f, 960.0f);
+		float width = static_cast<float>(window->GetWidth());
+		float height = static_cast<float>(window->GetHeight());
+		
+		ImGui::SliderFloat2("Translation A", &translationA.x, 0.0f, glm::max(width, height));
+		ImGui::SliderFloat2("Translation B", &translationB.x, 0.0f, glm::max(width, height));
+		translationA.x = glm::min(translationA.x, width);
+		translationA.y = glm::min(translationA.y, height);
+		translationB.x = glm::min(translationB.x, width);
+		translationB.y = glm::min(translationB.y, height);
+
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	}
 

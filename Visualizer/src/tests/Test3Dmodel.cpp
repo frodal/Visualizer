@@ -6,8 +6,8 @@
 namespace Test {
 
 	Test3Dmodel::Test3Dmodel(std::string& name)
-		: Test(name), projection(glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, 0.1f, 1000.0f)),
-		view(glm::translate(glm::mat4(1.0f), glm::vec3(640, 360, -500.0f))),
+		: Test(name), projection(glm::ortho(-640.0f, 640.0f, -360.0f, 360.0f, 0.1f, 1000.0f)),
+		view(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -500.0f))),
 		model(glm::mat4(1.0f)), size(100.0f), speed(1.0f),
 		modelColor{ 1.0f, 1.0f, 1.0f, 1.0f },
 		backgroundColor{ 0.7f, 0.7f, 0.7f, 1.0f }
@@ -28,24 +28,29 @@ namespace Test {
 
 	void Test3Dmodel::OnUpdate(float deltaTime)
 	{
+		// Update projection matrix with latest viewport size
+		float halfWidth = static_cast<float>(window->GetWidth()) / 2.0f;
+		float halfHeight = static_cast<float>(window->GetHeight()) / 2.0f;
+		projection = glm::ortho(-halfWidth, halfWidth, -halfHeight, halfHeight, 0.1f, 1000.0f);
+
+		// Update model scale and rotation
+		model = glm::scale(glm::mat4(1.0f), glm::vec3(size, size, size)); // Scales the model
+		model = glm::rotate(model, static_cast<float>(Window::GetTime()) * speed, glm::vec3(0.0f, 1.0f, 0.0f)); // rotates the model about the vector
 	}
 
 	void Test3Dmodel::OnRender()
 	{
-		Renderer renderer;
-
-		renderer.SetClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
-		renderer.Clear();
-
-		model = glm::scale(glm::mat4(1.0f), glm::vec3(size, size, size)); // Scales the model
-		model = glm::rotate(model, static_cast<float>(Window::GetTime()) * speed, glm::vec3(0.0f, 1.0f, 0.0f)); // rotates the model about the vector
-
+		// Binds shader and sets uniforms in shader
 		shader->Bind();
 		shader->SetUniformMat4f("u_MVP", projection * view * model);
 		shader->SetUniformMat4f("u_NormalMatrix", glm::transpose(glm::inverse(model)));
 		shader->SetUniformMat4f("u_ModelMatrix", model);
 		shader->SetUniform4f("u_Color", modelColor[0], modelColor[1], modelColor[2], modelColor[3]);
 
+		// Render
+		Renderer renderer;
+		renderer.SetClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
+		renderer.Clear();
 		renderer.Draw(*model3D, *shader);
 	}
 
