@@ -22,7 +22,7 @@ namespace Test {
 		virtual void OnImGuiRender() override;
 	private:
 		glm::mat4 projection, view, model;
-		float size, speed;
+		float size, speed, rotationAngle;
 		float modelColor[4];
 		float backgroundColor[4];
 		std::unique_ptr<Model> model3D;

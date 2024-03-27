@@ -8,7 +8,7 @@ namespace Test {
 	Test3Dmodel::Test3Dmodel(std::string& name)
 		: Test(name), projection(glm::ortho(-640.0f, 640.0f, -360.0f, 360.0f, 0.1f, 1000.0f)),
 		view(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -500.0f))),
-		model(glm::mat4(1.0f)), size(100.0f), speed(1.0f),
+		model(glm::mat4(1.0f)), size(100.0f), speed(1.0f), rotationAngle(0),
 		modelColor{ 1.0f, 1.0f, 1.0f, 1.0f },
 		backgroundColor{ 0.7f, 0.7f, 0.7f, 1.0f }
 	{
@@ -35,7 +35,8 @@ namespace Test {
 
 		// Update model scale and rotation
 		model = glm::scale(glm::mat4(1.0f), glm::vec3(size, size, size)); // Scales the model
-		model = glm::rotate(model, static_cast<float>(Window::GetTime()) * speed, glm::vec3(0.0f, 1.0f, 0.0f)); // rotates the model about the vector
+		rotationAngle += deltaTime * speed;
+		model = glm::rotate(model, rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f)); // rotates the model about the vector
 	}
 
 	void Test3Dmodel::OnRender()
