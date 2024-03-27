@@ -75,20 +75,9 @@ project "Visualizer"
     { 
         "GLFW",
         "ImGui",
-        "opengl32.lib"
+        "opengl32.lib",
+        "Visualizer/vendor/glew-2.2.0/lib/Win64/glew32s.lib"
     }
-
-    filter "architecture:x64"
-        links
-        {
-            "Visualizer/vendor/glew-2.2.0/lib/Win64/glew32s.lib"
-        }
-
-    filter "architecture:x86"
-        links
-        {
-            "Visualizer/vendor/glew-2.2.0/lib/Win32/glew32s.lib"
-        }
 
     filter "system:windows"
         systemversion "latest"
