@@ -17,6 +17,7 @@ See the documentation of OpenGL, e.g., http://docs.gl/
 #include "tests/TestMatrixEffect.h"
 #include "tests/TestMandelbrot.h"
 #include "tests/Test3Dmodel.h"
+#include "tests/TestRayTracing.h"
 
 
 /* Initial window title, width, height and Vsync setting */
@@ -56,6 +57,7 @@ int EntryPoint(void)
 		testMenu->RegisterTest<Test::TestMatrixEffect>("The Matrix pixel effect");
 		testMenu->RegisterTest<Test::TestMandelbrot>("Mandelbrot fractal");
 		testMenu->RegisterTest<Test::Test3Dmodel>("3D model");
+		testMenu->RegisterTest<Test::TestRayTracing>("Ray Tracing");
 
 		/* Loop until the user closes the window */
 		while (!window.ShouldClose())
