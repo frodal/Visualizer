@@ -34,13 +34,13 @@ namespace Test {
 		};
 
 		vertexArray = std::make_unique<VertexArray>();
-		vertexBuffer = std::make_unique<VertexBuffer>(positions, sizeof(positions));
+		vertexBuffer = std::make_unique<VertexBuffer>(positions, static_cast<unsigned int>(sizeof(positions)));
 		VertexBufferLayout bufferLayout;
 		bufferLayout.Push<float>(2);
 		bufferLayout.Push<float>(2);
 		vertexArray->AddBuffer(*vertexBuffer, bufferLayout);
 
-		indexBuffer = std::make_unique<IndexBuffer>(indices, lengthof(indices));
+		indexBuffer = std::make_unique<IndexBuffer>(indices, static_cast<unsigned int>(lengthof(indices)));
 
 		shader = std::make_unique<Shader>("resources/shaders/Mandelbrot.glsl");
 		shader->Bind();

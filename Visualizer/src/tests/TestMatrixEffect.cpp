@@ -36,13 +36,13 @@ namespace Test {
 		renderer.EnableBlend();
 
 		vertexArray = std::make_unique<VertexArray>();
-		vertexBuffer = std::make_unique<VertexBuffer>(positions, sizeof(positions));
+		vertexBuffer = std::make_unique<VertexBuffer>(positions, static_cast<unsigned int>(sizeof(positions)));
 		VertexBufferLayout bufferLayout;
 		bufferLayout.Push<float>(2);
 		bufferLayout.Push<float>(2);
 		vertexArray->AddBuffer(*vertexBuffer, bufferLayout);
 
-		indexBuffer = std::make_unique<IndexBuffer>(indices, lengthof(indices));
+		indexBuffer = std::make_unique<IndexBuffer>(indices, static_cast<unsigned int>(lengthof(indices)));
 
 		shader = std::make_unique<Shader>("resources/shaders/Texture.glsl");
 		shader->Bind();
@@ -77,7 +77,7 @@ namespace Test {
 			for (unsigned int i = 0; i < length; i++)
 			{
 				int y = startHeight + i;
-				if (y < verticalPixelCount && y >= 0)
+				if (y < static_cast<int>(verticalPixelCount) && y >= 0)
 				{
 					unsigned int pos = x + y * horizontalPixelCount;
 					Pixel oldPixelData = pixels[pos];
@@ -96,7 +96,7 @@ namespace Test {
 		}
 
 		// Spawning letters
-		float time = Window::GetTime();
+		float time = static_cast<float>(Window::GetTime());
 		if (time > updateTime + 1.0f / 60.0f)
 		{
 			if (time > timeLastSpawn + (rand() % 5))
