@@ -25,6 +25,9 @@ public:
 	inline unsigned int GetWidth() const { return windowprops.Width; }
 	inline unsigned int GetHeight() const { return windowprops.Height; }
 	inline int GetKey(int key) const { return glfwGetKey(window, key); }
+	inline int GetMouseButton(int button) const { return glfwGetMouseButton(window, button); }
+	inline glm::vec2 GetMousePosition() const { double x, y; glfwGetCursorPos(window, &x, &y); return { static_cast<float>(x), static_cast<float>(y) }; }
+	inline void SetCursorMode(int mode) { glfwSetInputMode(window, GLFW_CURSOR, mode); }
 
 	void SetVSync(bool enabled);
 	inline bool IsVSync() const { return windowprops.Vsync; }
