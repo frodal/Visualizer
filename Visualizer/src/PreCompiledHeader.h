@@ -25,6 +25,10 @@
 #define GLM_FORCE_MESSAGES
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
 
 // Dear ImGui: Bloat-free Immediate Mode Graphical User interface for C++ with minimal dependencies, see https://github.com/ocornut/imgui
 #define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
