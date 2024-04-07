@@ -37,7 +37,7 @@ Test::TestRayTracing::TestRayTracing(std::string& name)
 	shader->Bind();
 	shader->SetUniform1i("u_Texture", textureSlot);
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height));
-	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
+	glm::mat4 view = glm::mat4(1.0f);
 	shader->SetUniformMat4f("u_MVP", projection * view);
 
 	texture = std::make_unique<Texture>();
@@ -121,9 +121,9 @@ void Test::TestRayTracing::OnImGuiRender()
 	ImGui::Begin("Scene");
 	ImGui::Separator();
 	ImGui::ColorEdit3("Sky color", glm::value_ptr(scene.skyColor));
-	ImGui::DragFloat("Sky emission power", &scene.skyEmissionPower, 0.05f, 0.0f, FLT_MAX);
+	ImGui::DragFloat("Sky emission power", &scene.skyEmissionPower, 0.05f, 0.0f, std::numeric_limits<float>::max());
 	ImGui::Separator();
-	for (size_t i = 0; i < scene.Spheres.size(); i++)
+	for (int i = 0; i < scene.Spheres.size(); i++)
 	{
 		ImGui::PushID(i);
 		ImGui::Text("Sphere %d", i);
@@ -131,14 +131,14 @@ void Test::TestRayTracing::OnImGuiRender()
 		Sphere& sphere = scene.Spheres[i];
 		ImGui::DragFloat3("Position", glm::value_ptr(sphere.Position), 0.1f);
 		ImGui::DragFloat("Radius", &sphere.Radius, 0.1f);
-		ImGui::DragInt("Material", &sphere.MaterialIndex, 1.0f, 0, (int)scene.Materials.size() - 1);
+		ImGui::DragInt("Material", &sphere.MaterialIndex, 1.0f, 0, static_cast<int>(scene.Materials.size()) - 1);
 
 		ImGui::Separator();
 
 		ImGui::PopID();
 	}
 
-	for (size_t i = 0; i < scene.Materials.size(); i++)
+	for (int i = 0; i < scene.Materials.size(); i++)
 	{
 		ImGui::PushID(i);
 		ImGui::Text("Material %d", i);
@@ -148,7 +148,7 @@ void Test::TestRayTracing::OnImGuiRender()
 		ImGui::DragFloat("Roughness", &material.Roughness, 0.05f, 0.0f, 1.0f);
 		ImGui::DragFloat("Metallic", &material.Metallic, 0.05f, 0.0f, 1.0f);
 		ImGui::ColorEdit3("Emission Color", glm::value_ptr(material.EmissionColor));
-		ImGui::DragFloat("Emission Power", &material.EmissionPower, 0.05f, 0.0f, FLT_MAX);
+		ImGui::DragFloat("Emission Power", &material.EmissionPower, 0.05f, 0.0f, std::numeric_limits<float>::max());
 
 		ImGui::Separator();
 

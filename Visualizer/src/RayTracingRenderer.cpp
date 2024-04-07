@@ -7,10 +7,10 @@ namespace Utils {
 
 	static uint32_t ConvertToRGBA(const glm::vec4& color)
 	{
-		uint8_t r = (uint8_t)(color.r * 255.0f);
-		uint8_t g = (uint8_t)(color.g * 255.0f);
-		uint8_t b = (uint8_t)(color.b * 255.0f);
-		uint8_t a = (uint8_t)(color.a * 255.0f);
+		uint8_t r = static_cast<uint8_t>(color.r * 255.0f);
+		uint8_t g = static_cast<uint8_t>(color.g * 255.0f);
+		uint8_t b = static_cast<uint8_t>(color.b * 255.0f);
+		uint8_t a = static_cast<uint8_t>(color.a * 255.0f);
 
 		uint32_t result = (a << 24) | (b << 16) | (g << 8) | r;
 		return result;
@@ -79,7 +79,7 @@ void RayTracingRenderer::Render(const Scene& scene, const RayTracingCamera& came
 	m_ActiveCamera = &camera;
 
 	if (m_FrameIndex == 1)
-		memset(m_AccumulationData, 0, m_width * m_height * sizeof(glm::vec4));
+		memset(m_AccumulationData, 0, static_cast<size_t>(m_width) * static_cast<size_t>(m_height) * sizeof(glm::vec4));
 
 #define MT 1
 #if MT
@@ -94,7 +94,7 @@ void RayTracingRenderer::Render(const Scene& scene, const RayTracingCamera& came
 					m_AccumulationData[x + y * m_width] += color;
 
 					glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_width];
-					accumulatedColor /= (float)m_FrameIndex;
+					accumulatedColor /= static_cast<float>(m_FrameIndex);
 
 					accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
 					m_ImageData[x + y * m_width] = Utils::ConvertToRGBA(accumulatedColor);
@@ -111,7 +111,7 @@ void RayTracingRenderer::Render(const Scene& scene, const RayTracingCamera& came
 			m_AccumulationData[x + y * m_width] += color;
 
 			glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_width];
-			accumulatedColor /= (float)m_FrameIndex;
+			accumulatedColor /= static_cast<float>(m_FrameIndex);
 
 			accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
 			m_ImageData[x + y * m_width] = Utils::ConvertToRGBA(accumulatedColor);
@@ -136,9 +136,9 @@ void RayTracingRenderer::Render(const Scene& scene, const RayTracingCamera& came
 
 glm::vec4 RayTracingRenderer::PerPixel(uint32_t x, uint32_t y)
 {
-	Ray ray;
+	Ray ray{};
 	ray.Origin = m_ActiveCamera->GetPosition();
-	ray.Direction = m_ActiveCamera->GetRayDirections()[x + y * m_width];
+	ray.Direction = m_ActiveCamera->GetRayDirections()[static_cast<size_t>(x) + static_cast<size_t>(y) * static_cast<size_t>(m_width)];
 
 	glm::vec3 light(0.0f);
 	glm::vec3 contribution(1.0f);
@@ -146,7 +146,7 @@ glm::vec4 RayTracingRenderer::PerPixel(uint32_t x, uint32_t y)
 	uint32_t seed = x + y * m_width;
 	seed *= m_FrameIndex;
 
-	int bounces = 5;
+	constexpr int bounces = 5;
 	for (int i = 0; i < bounces; i++)
 	{
 		seed += i;
@@ -165,7 +165,8 @@ glm::vec4 RayTracingRenderer::PerPixel(uint32_t x, uint32_t y)
 		contribution *= material.Albedo;
 		light += material.GetEmission();
 
-		ray.Origin = payload.WorldPosition + payload.WorldNormal * 0.0001f;
+		constexpr float offset = std::numeric_limits<float>::epsilon();
+		ray.Origin = payload.WorldPosition + payload.WorldNormal * offset;
 		ray.Direction = glm::normalize(payload.WorldNormal + Utils::InUnitSphere(seed));
 	}
 
@@ -174,7 +175,7 @@ glm::vec4 RayTracingRenderer::PerPixel(uint32_t x, uint32_t y)
 
 RayTracingRenderer::HitPayload RayTracingRenderer::TraceRay(const Ray& ray)
 {
-	int closestSphere = -1;
+	int closestSphereIndex = -1;
 	float hitDistance = std::numeric_limits<float>::max();
 	for (size_t i = 0; i < m_ActiveScene->Spheres.size(); i++)
 	{
@@ -194,19 +195,19 @@ RayTracingRenderer::HitPayload RayTracingRenderer::TraceRay(const Ray& ray)
 		if (closestT > 0.0f && closestT < hitDistance)
 		{
 			hitDistance = closestT;
-			closestSphere = (int)i;
+			closestSphereIndex = static_cast<int>(i);
 		}
 	}
 
-	if (closestSphere < 0)
+	if (closestSphereIndex < 0)
 		return Miss(ray);
 
-	return ClosestHit(ray, hitDistance, closestSphere);
+	return ClosestHit(ray, hitDistance, closestSphereIndex);
 }
 
 RayTracingRenderer::HitPayload RayTracingRenderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
 {
-	RayTracingRenderer::HitPayload payload;
+	RayTracingRenderer::HitPayload payload{};
 	payload.HitDistance = hitDistance;
 	payload.ObjectIndex = objectIndex;
 
@@ -223,7 +224,7 @@ RayTracingRenderer::HitPayload RayTracingRenderer::ClosestHit(const Ray& ray, fl
 
 RayTracingRenderer::HitPayload RayTracingRenderer::Miss(const Ray& ray)
 {
-	RayTracingRenderer::HitPayload payload;
+	RayTracingRenderer::HitPayload payload{};
 	payload.HitDistance = -1.0f;
 	return payload;
 }

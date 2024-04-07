@@ -25,6 +25,7 @@ public:
 	const std::vector<glm::vec3>& GetRayDirections() const { return m_RayDirections; }
 
 	float GetRotationSpeed();
+	float GetTranslationSpeed();
 private:
 	void RecalculateProjection();
 	void RecalculateView();
