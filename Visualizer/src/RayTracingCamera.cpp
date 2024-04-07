@@ -19,22 +19,15 @@ RayTracingCamera::RayTracingCamera(float verticalFOV, float nearClip, float farC
 
 bool RayTracingCamera::OnUpdate(float ts)
 {
-	if (!m_window)
-		return false;
-
-	glm::vec2 mousePos = m_window->GetMousePosition();
-	glm::vec2 delta = (mousePos - m_LastMousePosition);
-	m_LastMousePosition = mousePos;
-
-	if (m_window->GetMouseButton(GLFW_MOUSE_BUTTON_2) != GLFW_PRESS)
-	{
-		m_window->SetCursorMode(GLFW_CURSOR_NORMAL);
-		return false;
-	}
-
-	m_window->SetCursorMode(GLFW_CURSOR_DISABLED);
-
 	bool moved = false;
+
+	if (!m_window)
+		return moved;
+
+	// // Check if ImGui has already handled the mouse input
+	ImGuiIO& io = ImGui::GetIO();
+	if (io.WantCaptureMouse || io.WantCaptureKeyboard)
+		return moved;
 
 	constexpr glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
 	glm::vec3 rightDirection = glm::cross(m_ForwardDirection, upDirection);
@@ -73,17 +66,29 @@ bool RayTracingCamera::OnUpdate(float ts)
 		moved = true;
 	}
 
-	// Rotation
-	if (delta.x != 0.0f || delta.y != 0.0f)
+	glm::vec2 mousePos = m_window->GetMousePosition();
+	glm::vec2 delta = (mousePos - m_LastMousePosition);
+	m_LastMousePosition = mousePos;
+
+	if (m_window->GetMouseButton(GLFW_MOUSE_BUTTON_1) == GLFW_PRESS || m_window->GetMouseButton(GLFW_MOUSE_BUTTON_2) == GLFW_PRESS)
 	{
-		float pitchDelta = delta.y * GetRotationSpeed();
-		float yawDelta = delta.x * GetRotationSpeed();
+		m_window->SetCursorMode(GLFW_CURSOR_DISABLED);
+		// Rotation
+		if (delta.x != 0.0f || delta.y != 0.0f)
+		{
+			float pitchDelta = delta.y * GetRotationSpeed();
+			float yawDelta = delta.x * GetRotationSpeed();
 
-		glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, rightDirection),
-			glm::angleAxis(-yawDelta, upDirection)));
-		m_ForwardDirection = glm::rotate(q, m_ForwardDirection);
+			glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, rightDirection),
+				glm::angleAxis(-yawDelta, upDirection)));
+			m_ForwardDirection = glm::rotate(q, m_ForwardDirection);
 
-		moved = true;
+			moved = true;
+		}
+	}
+	else
+	{
+		m_window->SetCursorMode(GLFW_CURSOR_NORMAL);
 	}
 
 	if (moved)
