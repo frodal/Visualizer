@@ -162,12 +162,17 @@ glm::vec4 RayTracingRenderer::PerPixel(uint32_t x, uint32_t y)
 		const Sphere& sphere = m_ActiveScene->Spheres[payload.ObjectIndex];
 		const Material& material = m_ActiveScene->Materials[sphere.MaterialIndex];
 
-		contribution *= material.Albedo;
+		bool isSpecularBounce = material.Metallic >= Utils::RandomFloat(seed);
+
+		contribution *= glm::mix(material.Albedo, material.Specular, static_cast<float>(isSpecularBounce));
 		light += material.GetEmission();
 
 		constexpr float offset = std::numeric_limits<float>::epsilon();
 		ray.Origin = payload.WorldPosition + payload.WorldNormal * offset;
-		ray.Direction = glm::normalize(payload.WorldNormal + Utils::InUnitSphere(seed));
+
+		glm::vec3 diffuseDir = glm::normalize(payload.WorldNormal + Utils::InUnitSphere(seed));
+		glm::vec3 specularDir = glm::reflect(ray.Direction, payload.WorldNormal);
+		ray.Direction = glm::normalize(glm::mix(diffuseDir, specularDir, (1.0f - material.Roughness*material.Roughness) * static_cast<float>(isSpecularBounce)));
 	}
 
 	return glm::vec4(light * contribution, 1.0f);

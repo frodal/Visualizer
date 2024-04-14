@@ -47,15 +47,21 @@ Test::TestRayTracing::TestRayTracing(std::string& name)
 
 	Material& pinkSphereMaterial = scene.Materials.emplace_back();
 	pinkSphereMaterial.Albedo = { 1.0f, 0.0f, 1.0f };
-	pinkSphereMaterial.Roughness = 0.0f;
+	pinkSphereMaterial.Specular = { 1.0f, 0.0f, 1.0f };
+	pinkSphereMaterial.Roughness = 0.5f;
+	pinkSphereMaterial.Metallic = 0.2f;
 
 	Material& greenSphereMaterial = scene.Materials.emplace_back();
 	greenSphereMaterial.Albedo = { 0.4f, 0.8f, 0.4f };
-	greenSphereMaterial.Roughness = 0.1f;
+	greenSphereMaterial.Specular = { 0.4f, 0.8f, 0.4f };
+	greenSphereMaterial.Roughness = 0.5f;
+	greenSphereMaterial.Metallic = 0.5f;
 
 	Material& orangeSphereMaterial = scene.Materials.emplace_back();
 	orangeSphereMaterial.Albedo = { 0.8f, 0.5f, 0.2f };
+	orangeSphereMaterial.Specular = { 0.8f, 0.5f, 0.2f };
 	orangeSphereMaterial.Roughness = 0.1f;
+	orangeSphereMaterial.Metallic = 0.0f;
 	orangeSphereMaterial.EmissionColor = orangeSphereMaterial.Albedo;
 	orangeSphereMaterial.EmissionPower = 5.0f;
 
@@ -145,6 +151,7 @@ void Test::TestRayTracing::OnImGuiRender()
 
 		Material& material = scene.Materials[i];
 		ImGui::ColorEdit3("Albedo", glm::value_ptr(material.Albedo));
+		ImGui::ColorEdit3("Specular", glm::value_ptr(material.Specular));
 		ImGui::DragFloat("Roughness", &material.Roughness, 0.05f, 0.0f, 1.0f);
 		ImGui::DragFloat("Metallic", &material.Metallic, 0.05f, 0.0f, 1.0f);
 		ImGui::ColorEdit3("Emission Color", glm::value_ptr(material.EmissionColor));
